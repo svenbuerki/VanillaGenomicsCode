@@ -1,0 +1,66 @@
+---
+title: "Code associated to *Vanilla* genomics analyses"
+subtitle: ""
+author: "Sven Buerki and Paige Ellestad - Boise State University"
+date: "`r Sys.Date()`"
+output:
+#  bookdown::pdf_document2:
+#    toc: TRUE
+  bookdown::html_document2: 
+    toc: TRUE
+    toc_float: TRUE
+    self_contained: TRUE
+link-citations: yes
+fontsize: 12pt
+urlcolor: blue
+csl: AmJBot.csl
+bibliography: References.bib
+editor_options: 
+  markdown: 
+    wrap: sentence
+---
+
+```{js logo-js, echo=FALSE}
+$(document).ready(function() {
+  $('#header').parent().prepend('<div id=\"logo\"><img src=\"Images/boisestate-primarylogo-2color-rgb.png\" style=\"position:absolute; top:0; right:0; padding:10px; height:120px\"></div>');
+  $('#header').css('margin-right', '120px')
+});
+```
+
+```{r packages, echo=FALSE, warning=FALSE, include=FALSE}
+library(knitr)
+library(rmarkdown)
+library(bookdown)
+#library(distill)
+library(knitcitations)
+library(formatR)
+library(devtools)
+library(kfigr)
+library(dplyr)
+library(kableExtra)
+library(tufte)
+
+#Generate BibTex citation file for all R packages used to produce report
+knitr::write_bib(.packages(), file = 'packages.bib')
+```
+
+<div style="text-align: right"> [Download pdf version]() </div>
+<div style="text-align: right"> [Raw data on GitHub](https://github.com/svenbuerki/Genomics-Bioinformatics) </div>
+
+# Introduction
+
+
+# References
+
+<div id="refs"></div>
+
+# Appendix 1 {.appendix}
+
+Citations of all R packages used to generate this report. 
+
+```{r generateBibliography, eval = T, results="asis", cache = F, echo=F, warning = FALSE, message=FALSE}
+library("knitcitations")
+cleanbib()
+options("citation_format" = "pandoc")
+read.bibtex(file = "packages.bib")
+``` 

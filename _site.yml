@@ -1,0 +1,7 @@
+name: "Vanilla genomics"
+output_dir: "."
+navbar:
+  title: "Vanilla genomics"
+  left:
+    - text: "Home"
+      href: index.html
