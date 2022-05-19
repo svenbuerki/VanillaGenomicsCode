@@ -45,10 +45,37 @@ knitr::write_bib(.packages(), file = 'packages.bib')
 ```
 
 <div style="text-align: right"> [Download pdf version]() </div>
-<div style="text-align: right"> [Raw data on GitHub](https://github.com/svenbuerki/Genomics-Bioinformatics) </div>
+<div style="text-align: right"> [Raw data on GitHub](https://github.com/svenbuerki/VanillaGenomicsCode) </div>
 
 # Introduction
 
+This document provides the software, packages and code used to perform the genomic analyses described in Ellestad *et al.* (in prep.). All the analyses were performed on a Linux computer with the Ubuntu 18.04.6 LTS (GNU/Linux 4.15.0-177-generic x86_64) OS at Boise State University (ID, USA).
+
+# Data
+
+This project relies on pair-end Illumina short-read data (2x150bp) stored in `fastq` format and compressed using `gz` protocol. The data produced in this project will be deposited on NCBI under BioProject (pending). We are also using data from BioProject [PRJNA633886](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA633886/) published in @Hasing2020.
+
+# Project structure
+
+Although the data underpinning the analyses are not presented here (due to size limitations), we are providing an overview of our project structure to facilitate understanding of the code (see Figure \@ref(fig:prjstr)).
+
+```{r prjstr, echo=FALSE, fig.cap="Overview of the project structure applied to analyze data for the Vanilla genomics project.", out.width = '100%'}
+knitr::include_graphics("Images/Project_str_VanillaCode.png")
+```
+
+A summary of the content of each folder is provided here (in alphabetical order):
+
+- `Bowtie`: Contains `sam`, `bam`, `bcf` and `fa` files associated to read mapping analyses to assemble *Vanilla* genomes from Illumina short-read data using the *Vanilla planifolia* (Daphna) reference genome ([GCA_016413895.1](https://www.ncbi.nlm.nih.gov/data-hub/genome/GCA_016413895.1/)). 
+- `DotPlot`: Contains `html` and `png` files associated to the dotplot analyses of the *Vanilla* genomes.
+- `GenomeScope`: Contains GenomeScope output files (`png`) generated using output of the JellyFish analyses.
+- `Heatmap`: Contains `csv` and `pdf` files associated to the percentage identity analyses at chromosome level.
+- `JellyFish`: Contains the `histo` files associated to the k-mer frequency analyses conducted in JellyFish and used as input for the `GenomeScope` analyses.
+- `Minimap2`: Contains the `paf` files from the `Minimap2` analyses used to conduct the dotplot, heatmap and genome coverage analyses.
+- `Pafr`: Contains `pdf` files associated to the genome coverage maps inferred using `paf` files.
+- `Raw_Data`: Contains `fastq.gz` files associated to the raw Illumina data used for this project.
+- `Reference_genome`: Contains `fna` files for the *Vanilla planifolia* (Daphna) reference genome ([GCA_016413895.1](https://www.ncbi.nlm.nih.gov/data-hub/genome/GCA_016413895.1/)) as well as the index files for the read mapping analyses.
+- `Smudgeplot`: Contains `kmctools` output files used for the Smudgeplot analyses.
+- `Trimmomatic`: Contains `trimmed.fastq.gz` files used as input for the genomic analyses.
 
 # References
 

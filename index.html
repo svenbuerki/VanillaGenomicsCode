@@ -376,19 +376,50 @@ $(document).ready(function() {
 <a href="">Download pdf version</a>
 </div>
 <div style="text-align: right">
-<a href="https://github.com/svenbuerki/Genomics-Bioinformatics">Raw data on GitHub</a>
+<a href="https://github.com/svenbuerki/VanillaGenomicsCode">Raw data on GitHub</a>
 </div>
 <div id="introduction" class="section level1" number="1">
 <h1><span class="header-section-number">1</span> Introduction</h1>
+<p>This document provides the software, packages and code used to perform the genomic analyses described in Ellestad <em>et al.</em> (in prep.). All the analyses were performed on a Linux computer with the Ubuntu 18.04.6 LTS (GNU/Linux 4.15.0-177-generic x86_64) OS at Boise State University (ID, USA).</p>
 </div>
-<div id="references" class="section level1" number="2">
-<h1><span class="header-section-number">2</span> References</h1>
-<div id="refs">
-
+<div id="data" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> Data</h1>
+<p>This project relies on pair-end Illumina short-read data (2x150bp) stored in <code>fastq</code> format and compressed using <code>gz</code> protocol. The data produced in this project will be deposited on NCBI under BioProject (pending). We are also using data from BioProject <a href="https://www.ncbi.nlm.nih.gov/bioproject/PRJNA633886/">PRJNA633886</a> published in <span class="citation"><a href="#ref-Hasing2020" role="doc-biblioref">Hasing et al.</a> (<a href="#ref-Hasing2020" role="doc-biblioref">2020</a>)</span>.</p>
+</div>
+<div id="project-structure" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> Project structure</h1>
+<p>Although the data underpinning the analyses are not presented here (due to size limitations), we are providing an overview of our project structure to facilitate understanding of the code (see Figure <a href="#fig:prjstr">3.1</a>).</p>
+<div class="figure"><span style="display:block;" id="fig:prjstr"></span>
+<img src="Images/Project_str_VanillaCode.png" alt="Overview of the project structure applied to analyze data for the Vanilla genomics project." width="100%" />
+<p class="caption">
+Figure 3.1: Overview of the project structure applied to analyze data for the Vanilla genomics project.
+</p>
+</div>
+<p>A summary of the content of each folder is provided here (in alphabetical order):</p>
+<ul>
+<li><code>Bowtie</code>: Contains <code>sam</code>, <code>bam</code>, <code>bcf</code> and <code>fa</code> files associated to read mapping analyses to assemble <em>Vanilla</em> genomes from Illumina short-read data using the <em>Vanilla planifolia</em> (Daphna) reference genome (<a href="https://www.ncbi.nlm.nih.gov/data-hub/genome/GCA_016413895.1/">GCA_016413895.1</a>).</li>
+<li><code>DotPlot</code>: Contains <code>html</code> and <code>png</code> files associated to the dotplot analyses of the <em>Vanilla</em> genomes.</li>
+<li><code>GenomeScope</code>: Contains GenomeScope output files (<code>png</code>) generated using output of the JellyFish analyses.</li>
+<li><code>Heatmap</code>: Contains <code>csv</code> and <code>pdf</code> files associated to the percentage identity analyses at chromosome level.</li>
+<li><code>JellyFish</code>: Contains the <code>histo</code> files associated to the k-mer frequency analyses conducted in JellyFish and used as input for the <code>GenomeScope</code> analyses.</li>
+<li><code>Minimap2</code>: Contains the <code>paf</code> files from the <code>Minimap2</code> analyses used to conduct the dotplot, heatmap and genome coverage analyses.</li>
+<li><code>Pafr</code>: Contains <code>pdf</code> files associated to the genome coverage maps inferred using <code>paf</code> files.</li>
+<li><code>Raw_Data</code>: Contains <code>fastq.gz</code> files associated to the raw Illumina data used for this project.</li>
+<li><code>Reference_genome</code>: Contains <code>fna</code> files for the <em>Vanilla planifolia</em> (Daphna) reference genome (<a href="https://www.ncbi.nlm.nih.gov/data-hub/genome/GCA_016413895.1/">GCA_016413895.1</a>) as well as the index files for the read mapping analyses.</li>
+<li><code>Smudgeplot</code>: Contains <code>kmctools</code> output files used for the Smudgeplot analyses.</li>
+<li><code>Trimmomatic</code>: Contains <code>trimmed.fastq.gz</code> files used as input for the genomic analyses.</li>
+</ul>
+</div>
+<div id="references" class="section level1" number="4">
+<h1><span class="header-section-number">4</span> References</h1>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-Hasing2020" class="csl-entry">
+<span class="smallcaps">Hasing, T.</span>, <span class="smallcaps">H. Tang</span>, <span class="smallcaps">M. Brym</span>, <span class="smallcaps">F. Khazi</span>, <span class="smallcaps">T. Huang</span>, and <span class="smallcaps">A.H. Chambers</span>. 2020. A phased vanilla planifolia genome enables genetic improvement of flavour and production. <em>Nature Food</em> 1: 811–819. Available at: <a href="https://doi.org/10.1038/s43016-020-00197-2">https://doi.org/10.1038/s43016-020-00197-2</a>.
 </div>
 </div>
-<div id="appendix-1" class="section level1 appendix" number="3">
-<h1><span class="header-section-number">3</span> Appendix 1</h1>
+</div>
+<div id="appendix-1" class="section level1 appendix" number="5">
+<h1><span class="header-section-number">5</span> Appendix 1</h1>
 <p>Citations of all R packages used to generate this report.</p>
 <p>[1] J. Allaire, Y. Xie, J. McPherson, et al. <em>rmarkdown: Dynamic
 Documents for R</em>. R package version 2.14. 2022. &lt;URL:
