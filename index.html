@@ -11,9 +11,9 @@
 
 <meta name="author" content="Sven Buerki and Paige Ellestad - Boise State University" />
 
-<meta name="date" content="2022-05-19" />
+<meta name="date" content="2022-05-24" />
 
-<title>Code associated to Vanilla genomics analyses</title>
+<title>Analytical workflow and code associated to Vanilla genomics analyses</title>
 
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -359,9 +359,9 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Code associated to <em>Vanilla</em> genomics analyses</h1>
+<h1 class="title toc-ignore">Analytical workflow and code associated to <em>Vanilla</em> genomics analyses</h1>
 <h4 class="author">Sven Buerki and Paige Ellestad - Boise State University</h4>
-<h4 class="date">2022-05-19</h4>
+<h4 class="date">2022-05-24</h4>
 
 </div>
 
@@ -403,23 +403,77 @@ Figure 3.1: Overview of the project structure applied to analyze data for the Va
 <li><code>Heatmap</code>: Contains <code>csv</code> and <code>pdf</code> files associated to the percentage identity analyses at chromosome level.</li>
 <li><code>JellyFish</code>: Contains the <code>histo</code> files associated to the k-mer frequency analyses conducted in JellyFish and used as input for the <code>GenomeScope</code> analyses.</li>
 <li><code>Minimap2</code>: Contains the <code>paf</code> files from the <code>Minimap2</code> analyses used to conduct the dotplot, heatmap and genome coverage analyses.</li>
-<li><code>Pafr</code>: Contains <code>pdf</code> files associated to the genome coverage maps inferred using <code>paf</code> files.</li>
+<li><code>Pafr</code>: Contains <code>pdf</code> files associated to the genome coverage maps inferred using <code>paf</code> files. This folder is entitled <code>Pafr</code> because the coverage maps are inferred using the r package <em>pafr</em>.</li>
 <li><code>Raw_Data</code>: Contains <code>fastq.gz</code> files associated to the raw Illumina data used for this project.</li>
 <li><code>Reference_genome</code>: Contains <code>fna</code> files for the <em>Vanilla planifolia</em> (Daphna) reference genome (<a href="https://www.ncbi.nlm.nih.gov/data-hub/genome/GCA_016413895.1/">GCA_016413895.1</a>) as well as the index files for the read mapping analyses.</li>
 <li><code>Smudgeplot</code>: Contains <code>kmctools</code> output files used for the Smudgeplot analyses.</li>
 <li><code>Trimmomatic</code>: Contains <code>trimmed.fastq.gz</code> files used as input for the genomic analyses.</li>
 </ul>
 </div>
-<div id="references" class="section level1" number="4">
-<h1><span class="header-section-number">4</span> References</h1>
+<div id="analytical-pipeline" class="section level1" number="4">
+<h1><span class="header-section-number">4</span> Analytical pipeline</h1>
+<p>This section provides the code associated with the analyses aiming at comparing the genome complexity and structure of samples of <em>Vanilla planifolia</em> from Mexico and data available on NCBI. The following tasks are covered:</p>
+<ol style="list-style-type: decimal">
+<li>Setting environment.</li>
+<li>Downloading SRA files.</li>
+<li>Conducting reads trimming.</li>
+<li>Inferring genome size and heterozygosity.</li>
+<li>Inferring ploidy and genome complexity.</li>
+<li>Reconstructing genome sequences.</li>
+<li>Testing for chromosomal structural re-arrangements and inferring percentage identities.</li>
+</ol>
+<div id="setting-environment" class="section level2" number="4.1">
+<h2><span class="header-section-number">4.1</span> Setting environment</h2>
+<p>Since these analyses are requiring a UNIX-based OS, we started by <em>i</em>) remotely accessing the Linux computer using <code>ssh</code> protocol (you need your user ID and IP address), <em>ii</em>) launching a <code>tmux</code> session (safe environment that can be accessed from different locations) and <em>iii</em>) navigating to project folder (here <code>Vanilla_SRA</code>) and <em>iv</em>) creating a variable with sample ID for analyses as follows:</p>
+<pre class="bash"><code># 1. Remotely connect to computer using ssh (adjust with your credentials/IP)
+ssh userID@IP
+
+# 2. Start tmux session (to exit tmux session type Ctrl+b and d)
+tmux
+
+# 3.  Navigate to project location (adjust path)
+cd /media/SeaGate/Vanilla_SRA/Raw_Data/</code></pre>
+<p>Further information on <code>ssh</code> and <code>tmux</code> protocols can be accessed <a href="https://svenbuerki.github.io/Genomics-Bioinformatics/Tutorials.html">here</a>.</p>
+</div>
+<div id="downloading-sra-files" class="section level2" number="4.2">
+<h2><span class="header-section-number">4.2</span> Downloading SRA files</h2>
+<p>Here, we need to <em>i</em>) create the <code>$SRA</code> variable with <code>SRA</code> accession number of data to be downloaded, <em>ii</em>) navigate to right folder (where data will be saved; here <code>Raw_Data/</code>) and <em>iii</em>) download <code>SRA</code> files (R1 and R2) using <code>parallel-fastq-dump</code>. This program allows parallelizing the downloading process and greatly reduces the downloading time. In this case, the files that we are downloading are compressed (<code>gz</code>) and they are in <code>fastq</code> format generated by Illumina instruments. The commands are available below:</p>
+<pre class="bash"><code># 1. Create variable with sample SRA accession (as provided on NCBI)
+SRA=SRR12628846 &amp;&amp; # V. planifolia &#39;Hawaii&#39;
+
+# 2. Navigate to right location
+cd Raw_Data/ &amp;&amp;
+
+# 3. Download SRA files (R1 and R2) with parallelfastq (using 26 threads)
+parallel-fastq-dump -O . --sra-id $SRA --threads 26 --split-files --gzip</code></pre>
+<p><code>parallel-fastq-dump</code> is available on <a href="https://github.com/rvalieris/parallel-fastq-dump">GitHub</a> and can be installed as follows:</p>
+<pre class="bash"><code># Install program with Bioconda
+conda install parallel-fastq-dump</code></pre>
+</div>
+<div id="conducting-reads-trimming" class="section level2" number="4.3">
+<h2><span class="header-section-number">4.3</span> Conducting reads trimming</h2>
+<p>Here, we use <code>Trimmomatic</code> <span class="citation">(<a href="#ref-Bolger2014" role="doc-biblioref">Bolger et al., 2014</a>)</span> to clean/trim the Illumina reads as follows:</p>
+<pre class="bash"><code># 1. Navigate to right location
+cd ../Trimmomatic &amp;&amp;
+
+# 2. Conduct reads trimming
+TrimmomaticPE -threads 30 /media/SeaGate/Vanilla_SRA/Raw_Data/&quot;$SRA&quot;_1.fastq.gz /media/SeaGate/Vanilla_SRA/Raw_Data/&quot;$SRA&quot;_2.fastq.gz &quot;$SRA&quot;_1_trimmed.fastq.gz &quot;$SRA&quot;_1_UNPAIRED.fastq.gz &quot;$SRA&quot;_2_trimmed.fastq.gz &quot;$SRA&quot;_2_UNPAIRED.fastq.gz LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:100</code></pre>
+<p><code>Trimmomatic</code> is available on <a href="https://github.com/usadellab/Trimmomatic">GitHub</a>.</p>
+</div>
+</div>
+<div id="references" class="section level1" number="5">
+<h1><span class="header-section-number">5</span> References</h1>
 <div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-Bolger2014" class="csl-entry">
+<span class="smallcaps">Bolger, A.M.</span>, <span class="smallcaps">M. Lohse</span>, and <span class="smallcaps">B. Usadel</span>. 2014. Trimmomatic: A flexible trimmer for illumina sequence data. <em>Bioinformatics</em> 30: 2114–2120. Available at: <a href="http://dx.doi.org/10.1093/bioinformatics/btu170">http://dx.doi.org/10.1093/bioinformatics/btu170</a>.
+</div>
 <div id="ref-Hasing2020" class="csl-entry">
 <span class="smallcaps">Hasing, T.</span>, <span class="smallcaps">H. Tang</span>, <span class="smallcaps">M. Brym</span>, <span class="smallcaps">F. Khazi</span>, <span class="smallcaps">T. Huang</span>, and <span class="smallcaps">A.H. Chambers</span>. 2020. A phased vanilla planifolia genome enables genetic improvement of flavour and production. <em>Nature Food</em> 1: 811–819. Available at: <a href="https://doi.org/10.1038/s43016-020-00197-2">https://doi.org/10.1038/s43016-020-00197-2</a>.
 </div>
 </div>
 </div>
-<div id="appendix-1" class="section level1 appendix" number="5">
-<h1><span class="header-section-number">5</span> Appendix 1</h1>
+<div id="appendix-1" class="section level1 appendix" number="6">
+<h1><span class="header-section-number">6</span> Appendix 1</h1>
 <p>Citations of all R packages used to generate this report.</p>
 <p>[1] J. Allaire, Y. Xie, J. McPherson, et al. <em>rmarkdown: Dynamic
 Documents for R</em>. R package version 2.14. 2022. &lt;URL:
