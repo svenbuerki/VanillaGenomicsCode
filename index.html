@@ -446,9 +446,12 @@ cd Raw_Data/ &amp;&amp;
 
 # 3. Download SRA files (R1 and R2) with parallelfastq (using 26 threads)
 parallel-fastq-dump -O . --sra-id $SRA --threads 26 --split-files --gzip</code></pre>
+<div id="install-parallel-fastq-dump" class="section level3" number="4.2.1">
+<h3><span class="header-section-number">4.2.1</span> Install <code>parallel-fastq-dump</code></h3>
 <p><code>parallel-fastq-dump</code> is available on <a href="https://github.com/rvalieris/parallel-fastq-dump">GitHub</a> and can be installed as follows:</p>
 <pre class="bash"><code># Install program with Bioconda
 conda install parallel-fastq-dump</code></pre>
+</div>
 </div>
 <div id="conducting-reads-trimming" class="section level2" number="4.3">
 <h2><span class="header-section-number">4.3</span> Conducting reads trimming</h2>
@@ -458,7 +461,66 @@ cd ../Trimmomatic &amp;&amp;
 
 # 2. Conduct reads trimming
 TrimmomaticPE -threads 30 /media/SeaGate/Vanilla_SRA/Raw_Data/&quot;$SRA&quot;_1.fastq.gz /media/SeaGate/Vanilla_SRA/Raw_Data/&quot;$SRA&quot;_2.fastq.gz &quot;$SRA&quot;_1_trimmed.fastq.gz &quot;$SRA&quot;_1_UNPAIRED.fastq.gz &quot;$SRA&quot;_2_trimmed.fastq.gz &quot;$SRA&quot;_2_UNPAIRED.fastq.gz LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:100</code></pre>
+<div id="install-trimmomatic" class="section level3" number="4.3.1">
+<h3><span class="header-section-number">4.3.1</span> Install <code>Trimmomatic</code></h3>
 <p><code>Trimmomatic</code> is available on <a href="https://github.com/usadellab/Trimmomatic">GitHub</a>.</p>
+</div>
+</div>
+<div id="inferring-genome-size-and-heterozygosity" class="section level2" number="4.4">
+<h2><span class="header-section-number">4.4</span> Inferring genome size and heterozygosity</h2>
+<p>To infer the genome size and level of heterozygosity of <em>Vanilla planifolia</em> samples based on cleaned trimmed data, we are using the method implemented in <code>GenomScope 2.0</code> <span class="citation">(<a href="#ref-RanalloBenavidez2020" role="doc-biblioref">Ranallo-Benavidez et al., 2020</a>)</span>, which relies on k-mers (k=21) inferred by <code>JellyFish</code> <span class="citation">(<a href="#ref-Jellyfish2011" role="doc-biblioref">Marçais and Kingsford, 2011</a>)</span>. The commands are as follows:</p>
+<pre class="bash"><code># 1. Navigate to right location
+cd ../JellyFish &amp;&amp;
+
+# 2. Generate histo file with JellyFish
+jellyfish count -t 30 -C -m 21 -s 5G -o 21mer_trimmed_&quot;$SRA&quot;_pe12 &lt;(zcat /media/SeaGate/Vanilla_SRA/Trimmomatic/&quot;$SRA&quot;_1_trimmed.fastq.gz) &lt;(zcat /media/SeaGate/Vanilla_SRA/Trimmomatic/&quot;$SRA&quot;_2_trimmed.fastq.gz) &amp;&amp; 
+jellyfish histo -o 21mer_trimmed_&quot;$SRA&quot;_pe12.histo 21mer_trimmed_&quot;$SRA&quot;_pe12
+
+# 3. Use GenomeScope 2.0 to infer genome size and level of heterozygosity
+# Run locally using GenomeScope R package (must be installed)
+genomescope.R -i 21mer_trimmed_&quot;$SRA&quot;_pe12.histo -o output -k 21
+# Or go online ti run analysis with histo file
+http://qb.cshl.edu/genomescope/genomescope2.0/</code></pre>
+<p><strong>Note:</strong> You need to record <code>kcov</code> from the <code>GenomeScope</code> output to set the <code>L</code> parameter in the <code>smudgeplot</code> analysis (see below).</p>
+<div id="install-software" class="section level3" number="4.4.1">
+<h3><span class="header-section-number">4.4.1</span> Install software</h3>
+<p><code>GenomScope 2.0</code> is available on <a href="https://github.com/tbenavi1/genomescope2.0">GitHub</a> and <code>JellyFish</code> is available <a href="https://genome.umd.edu/jellyfish.html#Release">here</a>.</p>
+</div>
+</div>
+<div id="inferring-ploidy-and-genome-complexity." class="section level2" number="4.5">
+<h2><span class="header-section-number">4.5</span> Inferring ploidy and genome complexity.</h2>
+<p>We have inferred ploidy level of <em>Vanilla planifolia</em> samples and further investigated their genomic complexity (focusing on heterozygous k-mers) by applying the approach implemented in <code>smudgeplot</code> <span class="citation">(<a href="#ref-RanalloBenavidez2020" role="doc-biblioref">Ranallo-Benavidez et al., 2020</a>)</span>, which relies on k-mers (k=21) inferred by <code>KMC</code> <span class="citation">(<a href="#ref-KMC2017" role="doc-biblioref">Kokot et al., 2017</a>)</span>. The commands are as follows:</p>
+<pre class="bash"><code># 1.Navigate to right folder
+cd ../Smudgeplot/ &amp;&amp;
+
+# 2. Conduct smudgeplot to infer ploidy and genome complexity
+# list files for kmc tools analysis
+ls /media/SeaGate/Vanilla_SRA/Trimmomatic/&quot;$SRA&quot;_R*_trimmed.fq.gz &gt; FILES_&quot;$SRA&quot; &amp;&amp;
+# kmer 21, 30 threads, 128G of memory, counting kmer coverages between 1 and 10000x
+kmc -k21 -t30 -m128 -ci1 -cs10000 @FILES_&quot;$SRA&quot; kmcdb_&quot;$SRA&quot; . &amp;&amp;
+kmc_tools transform kmcdb_&quot;$SRA&quot; histogram kmcdb_k21_&quot;$SRA&quot;.hist -cx10000 &amp;&amp;
+
+# Declare variable 
+kcov=32 #Please edit based on GenomeScope analysis
+
+# Define L = (kcov/2) - 5 # As proposed in smudgeplot manual
+L=$(expr $kcov / 2 - 5) &amp;&amp;
+U=$(smudgeplot.py cutoff kmcdb_k21_&quot;$SRA&quot;.hist U) &amp;&amp;
+
+echo $L $U # these need to be sane values &amp;&amp;
+# L should be like 20 - 200
+# U should be like 500 - 3000
+
+kmc_tools transform kmcdb_&quot;$SRA&quot; -ci&quot;$L&quot; -cx&quot;$U&quot; reduce kmcdb_&quot;$SRA&quot;_L&quot;$L&quot;_U&quot;$U&quot; &amp;&amp;
+smudge_pairs kmcdb_&quot;$SRA&quot;_L&quot;$L&quot;_U&quot;$U&quot; kmcdb_&quot;$SRA&quot;_L&quot;$L&quot;_U&quot;$U&quot;_coverages.tsv kmcdb_&quot;$SRA&quot;_L&quot;$L&quot;_U&quot;$U&quot;_pairs.tsv &gt; kmcdb_&quot;$SRA&quot;_L&quot;$L&quot;_U&quot;$U&quot;_familysizes.tsv
+
+# Generate the smudgeplot
+#Run R code to produce smudgeplot (R package must be installed)
+smudgeplot.py plot kmcdb_&quot;$SRA&quot;_L&quot;$L&quot;_U&quot;$U&quot;_coverages.tsv -o &quot;$SRA&quot;_L&quot;$L&quot;_U&quot;$U&quot; -k 21</code></pre>
+<div id="install-software-1" class="section level3" number="4.5.1">
+<h3><span class="header-section-number">4.5.1</span> Install software</h3>
+<p><code>KMC</code> is available on <a href="https://github.com/refresh-bio/KMC">GitHub</a> and <code>smudgeplot</code> is also available on <a href="https://github.com/KamilSJaron/smudgeplot">GitHub</a>.</p>
+</div>
 </div>
 </div>
 <div id="references" class="section level1" number="5">
@@ -469,6 +531,15 @@ TrimmomaticPE -threads 30 /media/SeaGate/Vanilla_SRA/Raw_Data/&quot;$SRA&quot;_1
 </div>
 <div id="ref-Hasing2020" class="csl-entry">
 <span class="smallcaps">Hasing, T.</span>, <span class="smallcaps">H. Tang</span>, <span class="smallcaps">M. Brym</span>, <span class="smallcaps">F. Khazi</span>, <span class="smallcaps">T. Huang</span>, and <span class="smallcaps">A.H. Chambers</span>. 2020. A phased vanilla planifolia genome enables genetic improvement of flavour and production. <em>Nature Food</em> 1: 811–819. Available at: <a href="https://doi.org/10.1038/s43016-020-00197-2">https://doi.org/10.1038/s43016-020-00197-2</a>.
+</div>
+<div id="ref-KMC2017" class="csl-entry">
+<span class="smallcaps">Kokot, M.</span>, <span class="smallcaps">M. Długosz</span>, and <span class="smallcaps">S. Deorowicz</span>. 2017. <span class="nocase">KMC 3: counting and manipulating k-mer statistics</span>. <em>Bioinformatics</em> 33: 2759–2761. Available at: <a href="https://doi.org/10.1093/bioinformatics/btx304">https://doi.org/10.1093/bioinformatics/btx304</a>.
+</div>
+<div id="ref-Jellyfish2011" class="csl-entry">
+<span class="smallcaps">Marçais, G.</span>, and <span class="smallcaps">C. Kingsford</span>. 2011. A fast, lock-free approach for efficient parallel counting of occurrences of k-mers. <em>Bioinformatics</em> 27: 764–770. Available at: <a href="+ http://dx.doi.org/10.1093/bioinformatics/btr011">+ http://dx.doi.org/10.1093/bioinformatics/btr011</a>.
+</div>
+<div id="ref-RanalloBenavidez2020" class="csl-entry">
+<span class="smallcaps">Ranallo-Benavidez, T.R.</span>, <span class="smallcaps">K.S. Jaron</span>, and <span class="smallcaps">M.C. Schatz</span>. 2020. GenomeScope 2.0 and smudgeplot for reference-free profiling of polyploid genomes. <em>Nature Communications</em> 11: 1432. Available at: <a href="https://doi.org/10.1038/s41467-020-14998-3">https://doi.org/10.1038/s41467-020-14998-3</a>.
 </div>
 </div>
 </div>

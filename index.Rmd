@@ -123,6 +123,8 @@ cd Raw_Data/ &&
 parallel-fastq-dump -O . --sra-id $SRA --threads 26 --split-files --gzip
 ```
 
+### Install `parallel-fastq-dump`
+
 `parallel-fastq-dump` is available on [GitHub](https://github.com/rvalieris/parallel-fastq-dump) and can be installed as follows:
 
 ```{bash echo = T, eval = F}
@@ -142,7 +144,73 @@ cd ../Trimmomatic &&
 TrimmomaticPE -threads 30 /media/SeaGate/Vanilla_SRA/Raw_Data/"$SRA"_1.fastq.gz /media/SeaGate/Vanilla_SRA/Raw_Data/"$SRA"_2.fastq.gz "$SRA"_1_trimmed.fastq.gz "$SRA"_1_UNPAIRED.fastq.gz "$SRA"_2_trimmed.fastq.gz "$SRA"_2_UNPAIRED.fastq.gz LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:100
 ```
 
+### Install `Trimmomatic`
+
 `Trimmomatic` is available on [GitHub](https://github.com/usadellab/Trimmomatic).
+
+
+## Inferring genome size and heterozygosity
+
+To infer the genome size and level of heterozygosity of *Vanilla planifolia* samples based on cleaned trimmed data, we are using the method implemented in `GenomScope 2.0` [@RanalloBenavidez2020], which relies on k-mers (k=21) inferred by `JellyFish` [@Jellyfish2011]. The commands are as follows:
+
+```{bash echo = T, eval = F}
+# 1. Navigate to right location
+cd ../JellyFish &&
+
+# 2. Generate histo file with JellyFish
+jellyfish count -t 30 -C -m 21 -s 5G -o 21mer_trimmed_"$SRA"_pe12 <(zcat /media/SeaGate/Vanilla_SRA/Trimmomatic/"$SRA"_1_trimmed.fastq.gz) <(zcat /media/SeaGate/Vanilla_SRA/Trimmomatic/"$SRA"_2_trimmed.fastq.gz) && 
+jellyfish histo -o 21mer_trimmed_"$SRA"_pe12.histo 21mer_trimmed_"$SRA"_pe12
+
+# 3. Use GenomeScope 2.0 to infer genome size and level of heterozygosity
+# Run locally using GenomeScope R package (must be installed)
+genomescope.R -i 21mer_trimmed_"$SRA"_pe12.histo -o output -k 21
+# Or go online ti run analysis with histo file
+http://qb.cshl.edu/genomescope/genomescope2.0/
+```
+
+**Note:** You need to record `kcov` from the `GenomeScope` output to set the `L` parameter in the `smudgeplot` analysis (see below).
+
+### Install software
+
+`GenomScope 2.0` is available on [GitHub](https://github.com/tbenavi1/genomescope2.0) and `JellyFish` is available [here](https://genome.umd.edu/jellyfish.html#Release).
+
+## Inferring ploidy and genome complexity.
+
+We have inferred ploidy level of *Vanilla planifolia* samples and further investigated their genomic complexity (focusing on heterozygous k-mers) by applying the approach implemented in `smudgeplot` [@RanalloBenavidez2020], which relies on k-mers (k=21) inferred by `KMC` [@KMC2017]. The commands are as follows:
+
+```{bash echo = T, eval = F}
+# 1.Navigate to right folder
+cd ../Smudgeplot/ &&
+
+# 2. Conduct smudgeplot to infer ploidy and genome complexity
+# list files for kmc tools analysis
+ls /media/SeaGate/Vanilla_SRA/Trimmomatic/"$SRA"_R*_trimmed.fq.gz > FILES_"$SRA" &&
+# kmer 21, 30 threads, 128G of memory, counting kmer coverages between 1 and 10000x
+kmc -k21 -t30 -m128 -ci1 -cs10000 @FILES_"$SRA" kmcdb_"$SRA" . &&
+kmc_tools transform kmcdb_"$SRA" histogram kmcdb_k21_"$SRA".hist -cx10000 &&
+
+# Declare variable 
+kcov=32 #Please edit based on GenomeScope analysis
+
+# Define L = (kcov/2) - 5 # As proposed in smudgeplot manual
+L=$(expr $kcov / 2 - 5) &&
+U=$(smudgeplot.py cutoff kmcdb_k21_"$SRA".hist U) &&
+
+echo $L $U # these need to be sane values &&
+# L should be like 20 - 200
+# U should be like 500 - 3000
+
+kmc_tools transform kmcdb_"$SRA" -ci"$L" -cx"$U" reduce kmcdb_"$SRA"_L"$L"_U"$U" &&
+smudge_pairs kmcdb_"$SRA"_L"$L"_U"$U" kmcdb_"$SRA"_L"$L"_U"$U"_coverages.tsv kmcdb_"$SRA"_L"$L"_U"$U"_pairs.tsv > kmcdb_"$SRA"_L"$L"_U"$U"_familysizes.tsv
+
+# Generate the smudgeplot
+#Run R code to produce smudgeplot (R package must be installed)
+smudgeplot.py plot kmcdb_"$SRA"_L"$L"_U"$U"_coverages.tsv -o "$SRA"_L"$L"_U"$U" -k 21
+```
+
+### Install software
+
+`KMC` is available on [GitHub](https://github.com/refresh-bio/KMC) and `smudgeplot` is also available on  [GitHub](https://github.com/KamilSJaron/smudgeplot).
 
 # References
 
