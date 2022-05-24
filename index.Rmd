@@ -1,7 +1,7 @@
 ---
-title: "Analytical workflow and code associated to *Vanilla* genomics analyses"
+title: "Data and code associated to *Vanilla* genomic analyses"
 subtitle: ""
-author: "Sven Buerki and Paige Ellestad - Boise State University"
+author: "Paige Ellestad and Sven Buerki - Boise State University"
 date: "`r Sys.Date()`"
 output:
 #  bookdown::pdf_document2:
