@@ -11,9 +11,9 @@
 
 <meta name="author" content="Paige Ellestad and Sven Buerki - Boise State University" />
 
-<meta name="date" content="2022-05-24" />
+<meta name="date" content="2022-05-25" />
 
-<title>Data and code associated to Vanilla genomic analyses</title>
+<title>Reproducible report for:</title>
 
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -359,9 +359,10 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Data and code associated to <em>Vanilla</em> genomic analyses</h1>
+<h1 class="title toc-ignore">Reproducible report for:</h1>
+<h3 class="subtitle">Vanilla genomics</h3>
 <h4 class="author">Paige Ellestad and Sven Buerki - Boise State University</h4>
-<h4 class="date">2022-05-24</h4>
+<h4 class="date">2022-05-25</h4>
 
 </div>
 
@@ -373,18 +374,17 @@ $(document).ready(function() {
 });
 </script>
 <div style="text-align: right">
-<a href="">Download pdf version</a>
-</div>
-<div style="text-align: right">
 <a href="https://github.com/svenbuerki/VanillaGenomicsCode">Raw data on GitHub</a>
 </div>
+<!-- The website is here: https://svenbuerki.github.io/VanillaGenomicsCode/ -->
 <div id="introduction" class="section level1" number="1">
 <h1><span class="header-section-number">1</span> Introduction</h1>
-<p>This document provides the software, packages and code used to perform the genomic analyses described in Ellestad <em>et al.</em> (in prep.). All the analyses were performed on a Linux computer with the Ubuntu 18.04.6 LTS (GNU/Linux 4.15.0-177-generic x86_64) OS at Boise State University (ID, USA).</p>
+<p>This reproducible report provides evidence on the data, software, packages and code used to perform the genomic analyses described in Ellestad <em>et al.</em> (in prep.). All the analyses were performed on a DELL Precision 7920 with the Ubuntu 18.04.6 LTS (GNU/Linux 4.15.0-177-generic x86_64) OS at Boise State University (ID, USA) between January and June 2022.</p>
 </div>
 <div id="data" class="section level1" number="2">
 <h1><span class="header-section-number">2</span> Data</h1>
-<p>This project relies on pair-end Illumina short-read data (2x150bp) stored in <code>fastq</code> format and compressed using <code>gz</code> protocol. The data produced in this project will be deposited on NCBI under BioProject (pending). We are also using data from BioProject <a href="https://www.ncbi.nlm.nih.gov/bioproject/PRJNA633886/">PRJNA633886</a> published in <span class="citation"><a href="#ref-Hasing2020" role="doc-biblioref">Hasing et al.</a> (<a href="#ref-Hasing2020" role="doc-biblioref">2020</a>)</span>.</p>
+<p>This project relies on paired-end Illumina short-read data (2x150bp) stored in <code>fastq</code> format and compressed using <code>gz</code> protocol. The data produced in this project are deposited on NCBI under BioProject (pending) and SRA accessions XXX-ZZZ. We are also using data from BioProject <a href="https://www.ncbi.nlm.nih.gov/bioproject/PRJNA633886/">PRJNA633886</a> published in <span class="citation"><a href="#ref-Hasing2020" role="doc-biblioref">Hasing et al.</a> (<a href="#ref-Hasing2020" role="doc-biblioref">2020</a>)</span>.</p>
+<!--- PAIGE: Please provide data to include a Table with samples information -->
 </div>
 <div id="project-structure" class="section level1" number="3">
 <h1><span class="header-section-number">3</span> Project structure</h1>
@@ -410,9 +410,9 @@ Figure 3.1: Overview of the project structure applied to analyze data for the Va
 <li><code>Trimmomatic</code>: Contains <code>trimmed.fastq.gz</code> files used as input for the genomic analyses.</li>
 </ul>
 </div>
-<div id="analytical-pipeline" class="section level1" number="4">
-<h1><span class="header-section-number">4</span> Analytical pipeline</h1>
-<p>This section provides the code associated with the analyses aiming at comparing the genome complexity and structure of samples of <em>Vanilla planifolia</em> from Mexico and data available on NCBI. The following tasks are covered:</p>
+<div id="overview-of-analytical-pipeline" class="section level1" number="4">
+<h1><span class="header-section-number">4</span> Overview of analytical pipeline</h1>
+<p>This section provides an overview of the analyses conducted in this study aiming at comparing the genome complexity and structure of samples of <em>Vanilla planifolia</em> from Mexico and data available on NCBI. Detials on the software and associated code for the following analyses are presented in this document:</p>
 <ol style="list-style-type: decimal">
 <li>Setting environment.</li>
 <li>Downloading SRA files.</li>
@@ -420,10 +420,11 @@ Figure 3.1: Overview of the project structure applied to analyze data for the Va
 <li>Inferring genome size and heterozygosity.</li>
 <li>Inferring ploidy and genome complexity.</li>
 <li>Reconstructing genome sequences.</li>
-<li>Testing for chromosomal structural re-arrangements and inferring percentage identities.</li>
+<li>Comparative chromosome level analyses.</li>
 </ol>
-<div id="setting-environment" class="section level2" number="4.1">
-<h2><span class="header-section-number">4.1</span> Setting environment</h2>
+</div>
+<div id="setting-environment" class="section level1" number="5">
+<h1><span class="header-section-number">5</span> Setting environment</h1>
 <p>Since these analyses are requiring a UNIX-based OS, we started by <em>i</em>) remotely accessing the Linux computer using <code>ssh</code> protocol (you need your user ID and IP address), <em>ii</em>) launching a <code>tmux</code> session (safe environment that can be accessed from different locations) and <em>iii</em>) navigating to project folder (here <code>Vanilla_SRA</code>) and <em>iv</em>) creating a variable with sample ID for analyses as follows:</p>
 <pre class="bash"><code># 1. Remotely connect to computer using ssh (adjust with your credentials/IP)
 ssh userID@IP
@@ -435,8 +436,8 @@ tmux
 cd /media/SeaGate/Vanilla_SRA/Raw_Data/</code></pre>
 <p>Further information on <code>ssh</code> and <code>tmux</code> protocols can be accessed <a href="https://svenbuerki.github.io/Genomics-Bioinformatics/Tutorials.html">here</a>.</p>
 </div>
-<div id="downloading-sra-files" class="section level2" number="4.2">
-<h2><span class="header-section-number">4.2</span> Downloading SRA files</h2>
+<div id="downloading-sra-files" class="section level1" number="6">
+<h1><span class="header-section-number">6</span> Downloading SRA files</h1>
 <p>Here, we need to <em>i</em>) create the <code>$SRA</code> variable with <code>SRA</code> accession number of data to be downloaded, <em>ii</em>) navigate to right folder (where data will be saved; here <code>Raw_Data/</code>) and <em>iii</em>) download <code>SRA</code> files (R1 and R2) using <code>parallel-fastq-dump</code>. This program allows parallelizing the downloading process and greatly reduces the downloading time. In this case, the files that we are downloading are compressed (<code>gz</code>) and they are in <code>fastq</code> format generated by Illumina instruments. The commands are available below:</p>
 <pre class="bash"><code># 1. Create variable with sample SRA accession (as provided on NCBI)
 SRA=SRR12628846 &amp;&amp; # V. planifolia &#39;Hawaii&#39;
@@ -446,28 +447,28 @@ cd Raw_Data/ &amp;&amp;
 
 # 3. Download SRA files (R1 and R2) with parallelfastq (using 26 threads)
 parallel-fastq-dump -O . --sra-id $SRA --threads 26 --split-files --gzip</code></pre>
-<div id="install-parallel-fastq-dump" class="section level3" number="4.2.1">
-<h3><span class="header-section-number">4.2.1</span> Install <code>parallel-fastq-dump</code></h3>
+<div id="installing-parallel-fastq-dump" class="section level2" number="6.1">
+<h2><span class="header-section-number">6.1</span> Installing <code>parallel-fastq-dump</code></h2>
 <p><code>parallel-fastq-dump</code> is available on <a href="https://github.com/rvalieris/parallel-fastq-dump">GitHub</a> and can be installed as follows:</p>
 <pre class="bash"><code># Install program with Bioconda
 conda install parallel-fastq-dump</code></pre>
 </div>
 </div>
-<div id="conducting-reads-trimming" class="section level2" number="4.3">
-<h2><span class="header-section-number">4.3</span> Conducting reads trimming</h2>
+<div id="conducting-reads-trimming" class="section level1" number="7">
+<h1><span class="header-section-number">7</span> Conducting reads trimming</h1>
 <p>Here, we use <code>Trimmomatic</code> <span class="citation">(<a href="#ref-Bolger2014" role="doc-biblioref">Bolger et al., 2014</a>)</span> to clean/trim the Illumina reads as follows:</p>
 <pre class="bash"><code># 1. Navigate to right location
 cd ../Trimmomatic &amp;&amp;
 
 # 2. Conduct reads trimming
 TrimmomaticPE -threads 30 /media/SeaGate/Vanilla_SRA/Raw_Data/&quot;$SRA&quot;_1.fastq.gz /media/SeaGate/Vanilla_SRA/Raw_Data/&quot;$SRA&quot;_2.fastq.gz &quot;$SRA&quot;_1_trimmed.fastq.gz &quot;$SRA&quot;_1_UNPAIRED.fastq.gz &quot;$SRA&quot;_2_trimmed.fastq.gz &quot;$SRA&quot;_2_UNPAIRED.fastq.gz LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:100</code></pre>
-<div id="install-trimmomatic" class="section level3" number="4.3.1">
-<h3><span class="header-section-number">4.3.1</span> Install <code>Trimmomatic</code></h3>
+<div id="installing-trimmomatic" class="section level2" number="7.1">
+<h2><span class="header-section-number">7.1</span> Installing <code>Trimmomatic</code></h2>
 <p><code>Trimmomatic</code> is available on <a href="https://github.com/usadellab/Trimmomatic">GitHub</a>.</p>
 </div>
 </div>
-<div id="inferring-genome-size-and-heterozygosity" class="section level2" number="4.4">
-<h2><span class="header-section-number">4.4</span> Inferring genome size and heterozygosity</h2>
+<div id="inferring-genome-size-and-heterozygosity" class="section level1" number="8">
+<h1><span class="header-section-number">8</span> Inferring genome size and heterozygosity</h1>
 <p>To infer the genome size and level of heterozygosity of <em>Vanilla planifolia</em> samples based on cleaned trimmed data, we are using the method implemented in <code>GenomScope 2.0</code> <span class="citation">(<a href="#ref-RanalloBenavidez2020" role="doc-biblioref">Ranallo-Benavidez et al., 2020</a>)</span>, which relies on k-mers (k=21) inferred by <code>JellyFish</code> <span class="citation">(<a href="#ref-Jellyfish2011" role="doc-biblioref">Marçais and Kingsford, 2011</a>)</span>. The commands are as follows:</p>
 <pre class="bash"><code># 1. Navigate to right location
 cd ../JellyFish &amp;&amp;
@@ -482,13 +483,13 @@ genomescope.R -i 21mer_trimmed_&quot;$SRA&quot;_pe12.histo -o output -k 21
 # Or go online ti run analysis with histo file
 http://qb.cshl.edu/genomescope/genomescope2.0/</code></pre>
 <p><strong>Note:</strong> You need to record <code>kcov</code> from the <code>GenomeScope</code> output to set the <code>L</code> parameter in the <code>smudgeplot</code> analysis (see below).</p>
-<div id="install-software" class="section level3" number="4.4.1">
-<h3><span class="header-section-number">4.4.1</span> Install software</h3>
+<div id="installing-software" class="section level2" number="8.1">
+<h2><span class="header-section-number">8.1</span> Installing software</h2>
 <p><code>GenomScope 2.0</code> is available on <a href="https://github.com/tbenavi1/genomescope2.0">GitHub</a> and <code>JellyFish</code> is available <a href="https://genome.umd.edu/jellyfish.html#Release">here</a>.</p>
 </div>
 </div>
-<div id="inferring-ploidy-and-genome-complexity." class="section level2" number="4.5">
-<h2><span class="header-section-number">4.5</span> Inferring ploidy and genome complexity.</h2>
+<div id="inferring-ploidy-and-genome-complexity." class="section level1" number="9">
+<h1><span class="header-section-number">9</span> Inferring ploidy and genome complexity.</h1>
 <p>We have inferred ploidy level of <em>Vanilla planifolia</em> samples and further investigated their genomic complexity (focusing on heterozygous k-mers) by applying the approach implemented in <code>smudgeplot</code> <span class="citation">(<a href="#ref-RanalloBenavidez2020" role="doc-biblioref">Ranallo-Benavidez et al., 2020</a>)</span>, which relies on k-mers (k=21) inferred by <code>KMC</code> <span class="citation">(<a href="#ref-KMC2017" role="doc-biblioref">Kokot et al., 2017</a>)</span>. The commands are as follows:</p>
 <pre class="bash"><code># 1.Navigate to right folder
 cd ../Smudgeplot/ &amp;&amp;
@@ -517,17 +518,222 @@ smudge_pairs kmcdb_&quot;$SRA&quot;_L&quot;$L&quot;_U&quot;$U&quot; kmcdb_&quot;
 # Generate the smudgeplot
 #Run R code to produce smudgeplot (R package must be installed)
 smudgeplot.py plot kmcdb_&quot;$SRA&quot;_L&quot;$L&quot;_U&quot;$U&quot;_coverages.tsv -o &quot;$SRA&quot;_L&quot;$L&quot;_U&quot;$U&quot; -k 21</code></pre>
-<div id="install-software-1" class="section level3" number="4.5.1">
-<h3><span class="header-section-number">4.5.1</span> Install software</h3>
+<div id="installing-software-1" class="section level2" number="9.1">
+<h2><span class="header-section-number">9.1</span> Installing software</h2>
 <p><code>KMC</code> is available on <a href="https://github.com/refresh-bio/KMC">GitHub</a> and <code>smudgeplot</code> is also available on <a href="https://github.com/KamilSJaron/smudgeplot">GitHub</a>.</p>
 </div>
 </div>
+<div id="reconstructing-genome-sequences" class="section level1" number="10">
+<h1><span class="header-section-number">10</span> Reconstructing genome sequences</h1>
+<p>Genome reconstructions (at chromosome scale) were carried out by mapping the cleaned trimmed reads to the <em>Vanilla planifolia</em> Daphna reference genome (<a href="https://www.ncbi.nlm.nih.gov/data-hub/genome/GCA_016413895.1/">GCA_016413895.1</a> in <code>fasta</code> format. Read mapping was conducted with <code>bowtie2</code> <span class="citation">(<a href="#ref-Langmead2012" role="doc-biblioref">Langmead and Salzberg, 2012</a>)</span> and the consensus genome sequences (in <code>fasta</code> format) were reconstructed by using <code>samtools</code> and <code>bcftools</code> <span class="citation">(<a href="#ref-Danecek2021" role="doc-biblioref">Danecek et al., 2021</a>)</span>. The code to execute these analyses is presented below:</p>
+<pre class="bash"><code># 1. Declare variable with sample name (if not already done)
+SRA=Van65 &amp;&amp; # Please adjust to your sample
+
+# 2. Navigate to right folder
+cd ../Bowtie &amp;&amp;
+
+# 3. Create index of reference genome (this needs to be done only once)
+bowtie2-build GCA_016413895.1_Elo_Vpla-A_principal_1.0_genomic_chrmosomes.fna GCA_016413895
+
+# 4. Map reads on ref genome using bowtie
+# Here we use the sensitive mode to be precise and 24 CPUs
+bowtie2 --end-to-end --sensitive -p 24 -x ../Reference_genome/GCA_016413895 -1 ../Trimmomatic/&quot;$SRA&quot;_R1_trimmed.fq.gz -2 ../Trimmomatic/&quot;$SRA&quot;_R2_trimmed.fq.gz -S &quot;$SRA&quot;.sam &amp;&amp; # Not printing anything in console
+
+# 5. Sort sam file and generate bam file
+cat &quot;$SRA&quot;.sam | samtools view -bS - | samtools sort -o &quot;$SRA&quot;.bam &amp;&amp;
+
+# 6. Call variants
+bcftools mpileup  -Ou -f ../Reference_genome/GCA_016413895.1_Elo_Vpla-A_principal_1.0_genomic_chrmosomes.fna &quot;$SRA&quot;.bam | bcftools call -vmO z -o &quot;$SRA&quot;_calls.vcf.gz &amp;&amp;
+
+# 7. Index the calls
+bcftools index &quot;$SRA&quot;_calls.vcf.gz &amp;&amp;
+
+# 8. Normalize indels
+bcftools norm -f ../Reference_genome/GCA_016413895.1_Elo_Vpla-A_principal_1.0_genomic_chrmosomes.fna &quot;$SRA&quot;_calls.vcf.gz -Ob -o &quot;$SRA&quot;_calls.norm.bcf &amp;&amp;
+
+# 9. Filter adjacent indels within 5bp
+bcftools filter --IndelGap 5 &quot;$SRA&quot;_calls.norm.bcf -Ob -o &quot;$SRA&quot;_calls.norm.flt-indels.bcf &amp;&amp;
+
+# 10. Apply variants to create consensus sequence
+cat ../Reference_genome/GCA_016413895.1_Elo_Vpla-A_principal_1.0_genomic_chrmosomes.fna | bcftools consensus &quot;$SRA&quot;_calls.vcf.gz &gt; &quot;$SRA&quot;_consensus.fa</code></pre>
+<p>Because scaffolds in the newly produced consensus genome sequences have to the same names than in the reference file, we have developed an <code>R</code> code (relying on base <code>R</code> functions) to rename scaffolds based on sample ID. The code is as follows:</p>
+<pre class="r"><code># Rename scaffolds in consensus fasta file
+
+# 1. Launch R from the terminal
+R
+
+# 2. Set file name
+SRA &lt;- &quot;Van65&quot; # Please adjust to your sample
+
+# 3. Load consensus fasta file
+conFasta &lt;- readLines(paste0(SRA, &quot;_consensus.fa&quot;)) 
+
+# 4. Extract old names
+FastaNames &lt;- conFasta[grep(&quot;&gt;&quot;, conFasta)]
+
+# 5. Build new names
+NewNames &lt;- gsub(&quot;&gt;&quot;, paste0(&quot;&gt;&quot;, SRA, &quot;_&quot;), sapply(strsplit(FastaNames, &quot; &quot;), &quot;[[&quot;, 1))
+
+# 6. Replace old scaffold names by new names
+conFasta[grep(&quot;&gt;&quot;, conFasta)] &lt;- NewNames
+
+# 7. Overwrite consensus file with new scaffold names
+write.table(conFasta, paste0(SRA, &quot;_consensus.fa&quot;), row.names = F, col.names=F, quote = F)
+
+# 8. Quit R
+quit(save=&quot;no&quot;)</code></pre>
+<div id="installing-software-2" class="section level2" number="10.1">
+<h2><span class="header-section-number">10.1</span> Installing software</h2>
+<p><code>bowtie2</code> is available on <a href="https://github.com/BenLangmead/bowtie2">GitHub</a>, but it can also be installed with <a href="https://anaconda.org/">Bioconda</a> as follows:</p>
+<pre class="bash"><code>#Install bowtie2 with Bioconda
+conda install bowtie2</code></pre>
+<p><code>samtools</code> and <code>bcftools</code> are available on <a href="https://github.com/samtools/">GitHub</a>.</p>
 </div>
-<div id="references" class="section level1" number="5">
-<h1><span class="header-section-number">5</span> References</h1>
+</div>
+<div id="comparative-chromosome-level-analyses" class="section level1" number="11">
+<h1><span class="header-section-number">11</span> Comparative chromosome level analyses</h1>
+<p>We applied the same approach than <span class="citation"><a href="#ref-Shirasawa2022" role="doc-biblioref">Shirasawa et al.</a> (<a href="#ref-Shirasawa2022" role="doc-biblioref">2022</a>)</span> and compared chromosome-level genome sequences of <em>Vanilla planifolia</em> samples with <code>Minimap2</code> <span class="citation">(<a href="#ref-Li2018" role="doc-biblioref">Li, 2018</a>)</span>, and produced coverage maps with the R package <a href="https://dwinter.github.io/pafr/index.html"><code>pafr</code></a>. Coverage maps allowed assessing for any chromosomal re-arrangements as well as evaluating coverage of our target sample compared to the reference genome. To further investigate putative chromosomal rearrangements, we inferred dot plots with the R package <a href="https://github.com/tpoorten/dotPlotly"><code>pafCoordsDotPlotly</code></a>. Finally, a heatmap showing percentage of identities between each sample and the reference genome at chromsome level was inferred using a custom <code>R</code> script. All these comparative analyses rely on the output of the <code>Minimap2</code> analyses, which are in <a href="https://cran.r-project.org/web/packages/pafr/vignettes/Introduction_to_pafr.html#:~:text=PAF%20is%20a%20plain%20text,least%20the%20following%2012%20columns.&amp;text=In%20addition%2C%20each%20row%20can,the%20SAM%20specification%20(pdf)"><code>paf</code></a> format. The code to execute these analyses is presented below (if you need to install software see below):</p>
+<div id="code-for-full-genome-alignments" class="section level2" number="11.1">
+<h2><span class="header-section-number">11.1</span> Code for full genome alignments</h2>
+<pre class="bash"><code>#Note: This code produces an output in paf format. 
+
+# 1. Declare variable with sample name (if not already done)
+SRA=Van69
+
+# 2. Navigate to right folder
+cd ../Minimap2 &amp;&amp;
+
+# 3. Conduct analysis with 1% of divergence between genomes (= asm10)
+minimap2 -t26 -cx asm10 -k 21 ../Reference_genome/GCA_016413895.1_Elo_Vpla-A_principal_1.0_genomic_chrmosomes.fna ../Bowtie/&quot;$SRA&quot;_consensus.fa &gt; aln_ref_asm10_&quot;$SRA&quot;.paf #  asm5/asm10/asm20 - asm-to-ref mapping, for ~0.1/1/5% sequence divergence</code></pre>
+</div>
+<div id="code-for-dot-plots" class="section level2" number="11.2">
+<h2><span class="header-section-number">11.2</span> Code for dot plots</h2>
+<pre class="r"><code># Note: This code outputs png and html documents
+
+# 1. Navigate to right folder
+cd ../DotPlot &amp;&amp;
+  
+# 2. Run analysis directly from terminal using Rscript
+# You have to adjust file names 
+Rscript pafCoordsDotPlotly.R -i /media/SeaGate/Vanilla_SRA/Minimap2/aln_ref_asm10_Van65.paf -o dotPlot_aln_ref_asm10_Van65 -s -t -m 10000 -q 50000 -k 14 -l # Provide name (change to VanXX)</code></pre>
+</div>
+<div id="code-for-genome-coverage-maps" class="section level2" number="11.3">
+<h2><span class="header-section-number">11.3</span> Code for genome coverage maps</h2>
+<pre class="r"><code># 1. Navigate to right folder
+cd ../Pafr &amp;&amp;
+
+# 2. Lauch R in terminal
+R
+
+# 3. Load package
+# Warning: Please install pafr with devtools prior to executing this code (see below)
+library(pafr, quietly=TRUE)
+
+# 4. Set file name
+SRA &lt;- &quot;Van65&quot; # Adjust name
+
+# 5. Read in the PAF data (output of Minimap2)
+ali &lt;- pafr::read_paf(paste0(&quot;../Minimap2/aln_ref_asm10_&quot;, SRA, &quot;.paf&quot;))
+
+# 6. Declare a vector of colors for coverage plot
+my.cols &lt;- c(&quot;orange&quot;, &quot;blue&quot;, &quot;yellow&quot;, &quot;grey&quot;, &quot;purple&quot;, &quot;green&quot;, &quot;brown&quot;, &quot;lightblue&quot;, &quot;maroon3&quot;, &quot;greenyellow&quot;,  &quot;cornsilk&quot;, &quot;coral4&quot;, &quot;chocolate&quot;, &quot;burlywood&quot;)
+
+# 7. Infer the coverage plot and save in pdf
+pdf(paste0(&quot;Coverage_plot_ref_&quot;, SRA, &quot;_asm10_Minimap2.pdf&quot;))
+plot_coverage(ali, fill=&#39;qname&#39;) + scale_fill_manual(values = my.cols)
+dev.off()
+
+# 8. Quit R
+quit(save=&quot;no&quot;)</code></pre>
+</div>
+<div id="code-for-heatmap" class="section level2" number="11.4">
+<h2><span class="header-section-number">11.4</span> Code for heatmap</h2>
+<p>Since the previous analyses did not unveil any chromosomal rearrangements, we can produce a heatmap to compare percentage identities between chromosomes (against the reference). To do that, we need to start by inferring the percentage identities between each target chromosome and the reference as follows: <code>100*(nmatch/alen)</code> (see <a href="https://cran.r-project.org/web/packages/pafr/vignettes/Introduction_to_pafr.html#:~:text=PAF%20is%20a%20plain%20text,least%20the%20following%2012%20columns.&amp;text=In%20addition%2C%20each%20row%20can,the%20SAM%20specification%20(pdf)">here</a> for more details). The custom <code>R</code> code below (relying on base <code>R</code> functions) builds a matrix storing percentage identities for all samples, which will then be used as input to infer the heatmap.</p>
+<pre class="r"><code># 1. Navigate to right folder
+cd ../Minimap2 &amp;&amp;
+
+# 2. Launch R from terminal
+R
+
+# 3. List all the PAF files in folder
+PAFfiles &lt;- list.files(pattern = &quot;.paf&quot;)
+
+# 4. Create list of reference scaffolds/chromosomes
+RefChrom &lt;- read.csv(PAFfiles[2], sep= &quot;\t&quot;, header=F)
+RefChrom &lt;- unique(RefChrom[,6])
+
+# 5. Create an empty matrix to store data (percentage identities)
+PercIdMat &lt;- matrix(ncol=length(PAFfiles), nrow=length(RefChrom))
+rownames(PercIdMat) &lt;- RefChrom
+colnames(PercIdMat) &lt;- PAFfiles
+
+PercIdMat &lt;- data.frame(PercIdMat)
+
+# 6. Populate matrix with Perc identities
+#Set a progress bar
+pb &lt;- txtProgressBar(min = 0, max = ncol(PercIdMat), style = 3)
+for(i in 1:ncol(PercIdMat)){
+ #Open PAF file
+ print(paste(&quot;Process: &quot;, colnames(PercIdMat)[i], sep = &quot;&quot;)) 
+ PAF &lt;- read.csv(colnames(PercIdMat)[i], sep= &quot;\t&quot;, header=F)
+ #Infer Perc identity for each chr
+ for(j in 1:nrow(PercIdMat)){
+   tmp &lt;- subset(PAF, PAF[,6] == rownames(PercIdMat)[j])
+  if(nrow(tmp) &gt; 1){
+   #Multiple hits so do mean
+   PercIdMat[j,i] &lt;- mean(100*(tmp[,10]/tmp[,11]))
+  }else{
+  #Infer PercId
+   PercIdMat[j,i] &lt;- 100*(tmp[,10]/tmp[,11])
+  } 
+ }  
+  #update progress bar
+  setTxtProgressBar(pb, i)  
+}
+close(pb)
+
+# 7. Write data out in Heatmap
+# Adjust path
+write.csv(PercIdMat, file = &quot;/media/SeaGate/Vanilla_SRA/Heatmap/PercIdMat.csv&quot;, quote = F)</code></pre>
+<p>Now we can generate the heatmap with the <code>R</code> <a href="https://github.com/talgalili/gplots"><em>gplots</em></a> package as follows:</p>
+<pre class="r"><code># 1. Load R package
+# If not installed then do
+# install.packages(&quot;gplots&quot;)
+library(&quot;gplots&quot;)
+
+# 2. Edit colnames and rownames for plot (from the PercIdMat object from previous code)
+colnames(PercIdMat) &lt;- gsub(&quot;aln_ref_asm10_&quot;, &quot;&quot;, colnames(PercIdMat))
+colnames(PercIdMat) &lt;- gsub(&quot;.paf&quot;, &quot;&quot;, colnames(PercIdMat))
+#rownames(PercIdMat) &lt;- gsub(&quot;[.]1&quot;, &quot;&quot;, rownames(PercIdMat))
+
+# 3. Produce heatmap and save it in pdf
+pdf(&quot;/media/SeaGate/Vanilla_SRA/Heatmap/Heatmap_chrom_Vanilla_2.pdf&quot;)
+heatmap.2(as.matrix(PercIdMat), scale = &quot;none&quot;, col = bluered(100), 
+          trace = &quot;none&quot;, density.info = &quot;none&quot;, cexRow = .8)
+dev.off()</code></pre>
+</div>
+<div id="installing-software-3" class="section level2" number="11.5">
+<h2><span class="header-section-number">11.5</span> Installing software</h2>
+<p>The protocol to install <code>minimap2</code> is described <a href="https://github.com/lh3/minimap2">here</a>. Apart from <code>pafCoordsDotPlotly.R</code> (see below), the other R packages can be installed as follows:</p>
+<pre class="r"><code># 1. Install pafr with devtools
+# If you don&#39;t have devtools do:
+#install.packages(devtools)
+devtools::install_github(&quot;dwinter/pafr&quot;)
+
+# 2. Install gplots from CRAN
+# Documentation: https://github.com/talgalili/gplots
+install.packages(&#39;gplots&#39;)</code></pre>
+<p>Visit this <a href="https://github.com/tpoorten/dotPlotly">webpage</a> to install the dependencies for the <code>pafCoordsDotPlotly.R</code> script.</p>
+</div>
+</div>
+<div id="references" class="section level1" number="12">
+<h1><span class="header-section-number">12</span> References</h1>
 <div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-Bolger2014" class="csl-entry">
 <span class="smallcaps">Bolger, A.M.</span>, <span class="smallcaps">M. Lohse</span>, and <span class="smallcaps">B. Usadel</span>. 2014. Trimmomatic: A flexible trimmer for illumina sequence data. <em>Bioinformatics</em> 30: 2114–2120. Available at: <a href="http://dx.doi.org/10.1093/bioinformatics/btu170">http://dx.doi.org/10.1093/bioinformatics/btu170</a>.
+</div>
+<div id="ref-Danecek2021" class="csl-entry">
+<span class="smallcaps">Danecek, P.</span>, <span class="smallcaps">J.K. Bonfield</span>, <span class="smallcaps">J. Liddle</span>, <span class="smallcaps">J. Marshall</span>, <span class="smallcaps">V. Ohan</span>, <span class="smallcaps">M.O. Pollard</span>, <span class="smallcaps">A. Whitwham</span>, et al. 2021. <span class="nocase">Twelve years of SAMtools and BCFtools</span>. <em>GigaScience</em> 10: Available at: <a href="https://doi.org/10.1093/gigascience/giab008">https://doi.org/10.1093/gigascience/giab008</a>.
 </div>
 <div id="ref-Hasing2020" class="csl-entry">
 <span class="smallcaps">Hasing, T.</span>, <span class="smallcaps">H. Tang</span>, <span class="smallcaps">M. Brym</span>, <span class="smallcaps">F. Khazi</span>, <span class="smallcaps">T. Huang</span>, and <span class="smallcaps">A.H. Chambers</span>. 2020. A phased vanilla planifolia genome enables genetic improvement of flavour and production. <em>Nature Food</em> 1: 811–819. Available at: <a href="https://doi.org/10.1038/s43016-020-00197-2">https://doi.org/10.1038/s43016-020-00197-2</a>.
@@ -535,16 +741,25 @@ smudgeplot.py plot kmcdb_&quot;$SRA&quot;_L&quot;$L&quot;_U&quot;$U&quot;_covera
 <div id="ref-KMC2017" class="csl-entry">
 <span class="smallcaps">Kokot, M.</span>, <span class="smallcaps">M. Długosz</span>, and <span class="smallcaps">S. Deorowicz</span>. 2017. <span class="nocase">KMC 3: counting and manipulating k-mer statistics</span>. <em>Bioinformatics</em> 33: 2759–2761. Available at: <a href="https://doi.org/10.1093/bioinformatics/btx304">https://doi.org/10.1093/bioinformatics/btx304</a>.
 </div>
+<div id="ref-Langmead2012" class="csl-entry">
+<span class="smallcaps">Langmead, B.</span>, and <span class="smallcaps">S.L. Salzberg</span>. 2012. Fast gapped-read alignment with bowtie 2. <em>Nature Methods</em> 9: 357–359. Available at: <a href="https://doi.org/10.1038/nmeth.1923">https://doi.org/10.1038/nmeth.1923</a>.
+</div>
+<div id="ref-Li2018" class="csl-entry">
+<span class="smallcaps">Li, H.</span> 2018. <span class="nocase">Minimap2: pairwise alignment for nucleotide sequences</span>. <em>Bioinformatics</em> 34: 3094–3100. Available at: <a href="https://doi.org/10.1093/bioinformatics/bty191">https://doi.org/10.1093/bioinformatics/bty191</a>.
+</div>
 <div id="ref-Jellyfish2011" class="csl-entry">
 <span class="smallcaps">Marçais, G.</span>, and <span class="smallcaps">C. Kingsford</span>. 2011. A fast, lock-free approach for efficient parallel counting of occurrences of k-mers. <em>Bioinformatics</em> 27: 764–770. Available at: <a href="+ http://dx.doi.org/10.1093/bioinformatics/btr011">+ http://dx.doi.org/10.1093/bioinformatics/btr011</a>.
 </div>
 <div id="ref-RanalloBenavidez2020" class="csl-entry">
 <span class="smallcaps">Ranallo-Benavidez, T.R.</span>, <span class="smallcaps">K.S. Jaron</span>, and <span class="smallcaps">M.C. Schatz</span>. 2020. GenomeScope 2.0 and smudgeplot for reference-free profiling of polyploid genomes. <em>Nature Communications</em> 11: 1432. Available at: <a href="https://doi.org/10.1038/s41467-020-14998-3">https://doi.org/10.1038/s41467-020-14998-3</a>.
 </div>
+<div id="ref-Shirasawa2022" class="csl-entry">
+<span class="smallcaps">Shirasawa, K.</span>, <span class="smallcaps">S. Ueta</span>, <span class="smallcaps">K. Murakami</span>, <span class="smallcaps">M. Abdelrahman</span>, <span class="smallcaps">A. Kanno</span>, and <span class="smallcaps">S. Isobe</span>. 2022. <span class="nocase">Chromosome-scale haplotype-phased genome assemblies of the male and female lines of wild asparagus (Asparagus kiusianus), a dioecious plant species</span>. <em>DNA Research</em> 29: Available at: <a href="https://doi.org/10.1093/dnares/dsac002">https://doi.org/10.1093/dnares/dsac002</a>.
 </div>
 </div>
-<div id="appendix-1" class="section level1 appendix" number="6">
-<h1><span class="header-section-number">6</span> Appendix 1</h1>
+</div>
+<div id="appendix-1" class="section level1 appendix" number="13">
+<h1><span class="header-section-number">13</span> Appendix 1</h1>
 <p>Citations of all R packages used to generate this report.</p>
 <p>[1] J. Allaire, Y. Xie, J. McPherson, et al. <em>rmarkdown: Dynamic
 Documents for R</em>. R package version 2.14. 2022. &lt;URL:
