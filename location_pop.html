@@ -11,8 +11,9 @@
 
 
 
-<title>Vanilla Genomic Project</title>
+<title>Map of sampling locations</title>
 
+<script src="site_libs/header-attrs-2.14/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -31,6 +32,14 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
+<link href="site_libs/leaflet-1.3.1/leaflet.css" rel="stylesheet" />
+<script src="site_libs/leaflet-1.3.1/leaflet.js"></script>
+<link href="site_libs/leafletfix-1.0.0/leafletfix.css" rel="stylesheet" />
+<script src="site_libs/proj4-2.6.2/proj4.min.js"></script>
+<script src="site_libs/Proj4Leaflet-1.0.1/proj4leaflet.js"></script>
+<link href="site_libs/rstudio_leaflet-1.3.1/rstudio_leaflet.css" rel="stylesheet" />
+<script src="site_libs/leaflet-binding-2.1.1/leaflet.js"></script>
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -274,33 +283,14 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Vanilla Genomic Project</h1>
+<h1 class="title toc-ignore">Map of sampling locations</h1>
 
 </div>
 
 
-<script type="text/javascript">
-$(document).ready(function() {
-  $('#header').parent().prepend('<div id=\"logo\"><img src=\"Images/boisestate-primarylogo-2color-rgb.png\" style=\"position:absolute; top:25px; right:0; padding:10px; height:120px\"></div>');
-  $('#header').css('margin-right', '120px')
-});
-</script>
-<div style="text-align: right">
-<a href="https://github.com/svenbuerki/VanillaGenomicsCode">Raw data on GitHub</a>
-</div>
-<!-- The website is here: https://svenbuerki.github.io/VanillaGenomicsCode/ -->
-<div id="website-structure" class="section level1" number="1">
-<h1><span class="header-section-number">1</span> Website structure</h1>
-<p>This companion website to Ellestad <em>et al.</em> (in prep.) provides a <a href="reproducible_report.html">reproducible report</a> associated to this research. The data, code and analyses associated to the review on genome-wide levels of heterozygosity in plants inferred using GenomeScope are also provided here. Finally, a map showing the locations where <em>Vanilla planifolia</em> were collected is available <a href="">here</a>.</p>
-<p>Overall, this study is aiming at developing GGGGG.</p>
-<p>This website is structured with the following tabs:</p>
-<ul>
-<li><a href="reproducible_report.html">Reproducible report</a> tab: Presentation of the data, software and code associated to the genomic analyses on <em>Vanilla planifolia</em> samples.</li>
-<li>Genome-wide heterozygosity tab: Data, code and analyses associated to review on heterozygosity inferred uisng the approach implemented in GenomeScope.</li>
-<li><a href="">How to cite</a> tab: Preferred citations to refer to material presented here.</li>
-<li><a href="">Acknolwedgements</a> tab: List of people and funders supporting this research.</li>
-</ul>
-</div>
+<p>Map showing locations of the two populations sampled in this study. Seeds from one mother plant were collected in each population and used to generate the 45 individuals included in this <a href="Analyses_rooting.html">experiment</a>. The population <code>ID3</code> corresponds to the G1 drought-tolerant genotype, whereas the <code>UT2</code> population corresponds to G2 drought-sensitive genotype.</p>
+<div id="htmlwidget-8df317c66ffe61dc500f" style="width:672px;height:480px;" class="leaflet html-widget"></div>
+<script type="application/json" data-for="htmlwidget-8df317c66ffe61dc500f">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addTiles","args":["https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",null,null,{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"attribution":"&copy; <a href=\"https://openstreetmap.org\">OpenStreetMap<\/a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA<\/a>"}]},{"method":"addMarkers","args":[[43.336,38.306],[-116.964,-109.387],null,null,null,{"interactive":true,"draggable":false,"keyboard":true,"title":"","alt":"","zIndexOffset":0,"opacity":1,"riseOnHover":false,"riseOffset":250},null,null,null,null,["ID3","UT2"],{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null]}],"limits":{"lat":[38.306,43.336],"lng":[-116.964,-109.387]}},"evals":[],"jsHooks":[]}</script>
 
 
 
