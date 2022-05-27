@@ -54,9 +54,38 @@ This reproducible report provides evidence on the data, software, packages and c
 
 # Data
 
-This project relies on paired-end Illumina short-read data (2x150bp) stored in `fastq` format and compressed using `gz` protocol. The data produced in this project are deposited on NCBI under BioProject (pending) and SRA accessions XXX-ZZZ. We are also using data from BioProject [PRJNA633886](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA633886/) published in @Hasing2020.
+This project relies on paired-end Illumina short-read data (2x150bp) in `fastq.gz` format generated on an Illumina HiSeq 2500 instrument. The data produced in this project are deposited on NCBI under BioProject (PRJNA841950) and SRA accessions SRR19374404-SRR19374419. We are also using data from the BioProject [PRJNA633886](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA633886/) published in @Hasing2020. Please find below further information on our sampling (herbarium specimens are deposited at HEM, Universidad de Ciencias y Artes de Chiapas, Mexico): 
 
-<!--- PAIGE: Please provide data to include a Table with samples information -->
+
+```{r tabsampling, eval = T, echo=F, warning = FALSE, message=FALSE}
+###~~~
+#Read in tsv with sampling data
+###~~~
+tsv <- read.csv("Data/metadata-11482489-processed-ok.tsv", sep = "\t") 
+
+###~~~
+#Produce final table
+###~~~
+
+#Order table
+tsv <- tsv[order(tsv$sample_name),]
+rownames(tsv) <- NULL
+
+#Red tsv to key data
+redtsv <- tsv[,c(6, 5, 1)]
+#Rm 2 samples for which we have limited genomic data
+rmSample <- c("MEX6", "MEX65")
+redtsv <- redtsv[-match(rmSample, redtsv$sample_name),]
+colnames(redtsv) <- c("Sample_ID", "BioSample", "SRA")
+
+###~~~
+#Plot timetable in doc
+###~~~
+#Plot table
+DT::datatable(redtsv, extensions = 'Buttons', options = list(dom = 'Blfrtip', buttons = c('copy', 'csv', 'excel', 'pdf', 'print')), rownames= FALSE) %>%
+  DT::formatStyle('Sample_ID', fontWeight = 'bold')
+
+```
 
 # Project structure {#prjstr}
 
@@ -173,7 +202,20 @@ TrimmomaticPE -threads 30 /media/SeaGate/Vanilla_SRA/Raw_Data/"$SRA"_1.fastq.gz 
 
 # Genome size and heterozygosity
 
-To infer the genome size and level of heterozygosity of *Vanilla planifolia* samples based on cleaned trimmed data, we are using the method implemented in `GenomScope 2.0` [@RanalloBenavidez2020], which relies on k-mers (k=21) inferred by `JellyFish` [@Jellyfish2011]. The commands are as follows:
+In this section, we are providing information to estimate genome sizes and levels of heterozygosity for the *Vanilla planifolia* samples inferred using the approach implemented in `GenomScope 2.0` [@RanalloBenavidez2020], which relies on k-mers (k=21) inferred by `JellyFish` [@Jellyfish2011].
+
+## Data requirements
+
+- **Input:** `$SRA_R1_trimmed.fastq.gz` and `$SRA_R2_trimmed.fastq.gz` containing cleaned paired reads from `Trimmomatic`.
+- **Output:** `21mer_trimmed_"$SRA"_pe12.histo` files from `JellyFish` used as input for the `GenomeScope 2` analysis. The latter analysis will generate plots stored in `png` format. You will also need to store `kcov` provided by `GenomeScope 2` for the `smudgeplot` analyses.
+
+## Dependencies
+
+`GenomScope 2.0` is available on [GitHub](https://github.com/tbenavi1/genomescope2.0) and `JellyFish` is available [here](https://genome.umd.edu/jellyfish.html#Release).
+
+## Code
+
+The commands to conduct these analyses are as follows:
 
 ```{bash echo = T, eval = F}
 # 1. Navigate to right location
@@ -192,13 +234,23 @@ http://qb.cshl.edu/genomescope/genomescope2.0/
 
 **Note:** You need to record `kcov` from the `GenomeScope` output to set the `L` parameter in the `smudgeplot` analysis (see below).
 
-## Installing software
-
-`GenomScope 2.0` is available on [GitHub](https://github.com/tbenavi1/genomescope2.0) and `JellyFish` is available [here](https://genome.umd.edu/jellyfish.html#Release).
 
 # Ploidy level and genome complexity
 
-We have inferred ploidy level of *Vanilla planifolia* samples and further investigated their genomic complexity (focusing on heterozygous k-mers) by applying the approach implemented in `smudgeplot` [@RanalloBenavidez2020], which relies on k-mers (k=21) inferred by `KMC` [@KMC2017]. The commands are as follows:
+Ploidy levels of *Vanilla planifolia* samples and their genomic complexity (focusing on heterozygous k-mers) were inferred by applying the approach implemented in `smudgeplot` [@RanalloBenavidez2020], which relies on k-mers (k=21) inferred by `KMC` [@KMC2017]. 
+
+## Data requirements
+
+- **Input:** `$SRA_R1_trimmed.fastq.gz` and `$SRA_R2_trimmed.fastq.gz` containing cleaned paired reads from `Trimmomatic` and `kcov` values from the `GenomeScope` analyses.
+- **Output:** `kmcdb_"$SRA"_L"$L"_U"$U"_coverages.tsv` files from `KMC`. These files will be used as input for the `smudgeplot` analyses, which will output plots in `png` format.
+
+## Dependencies
+
+`KMC` is available on [GitHub](https://github.com/refresh-bio/KMC) and `smudgeplot` is also available on  [GitHub](https://github.com/KamilSJaron/smudgeplot).
+
+## Code
+
+The commands to conduct these analyses are as follows:
 
 ```{bash echo = T, eval = F}
 # 1.Navigate to right folder
@@ -230,14 +282,29 @@ smudge_pairs kmcdb_"$SRA"_L"$L"_U"$U" kmcdb_"$SRA"_L"$L"_U"$U"_coverages.tsv kmc
 smudgeplot.py plot kmcdb_"$SRA"_L"$L"_U"$U"_coverages.tsv -o "$SRA"_L"$L"_U"$U" -k 21
 ```
 
-## Installing software
-
-`KMC` is available on [GitHub](https://github.com/refresh-bio/KMC) and `smudgeplot` is also available on  [GitHub](https://github.com/KamilSJaron/smudgeplot).
-
-
 # Reconstructing genome sequences
 
-Genome reconstructions (at chromosome scale) were carried out by mapping the cleaned trimmed reads to the *Vanilla planifolia* Daphna reference genome ([GCA_016413895.1](https://www.ncbi.nlm.nih.gov/data-hub/genome/GCA_016413895.1/) in `fasta` format. Read mapping was conducted with `bowtie2` [@Langmead2012] and the consensus genome sequences (in `fasta` format) were reconstructed by using `samtools` and `bcftools` [@Danecek2021]. The code to execute these analyses is presented below:
+Genome reconstructions (at chromosome scale) were carried out by mapping the cleaned trimmed reads to the *Vanilla planifolia* Daphna reference genome ([GCA_016413895.1](https://www.ncbi.nlm.nih.gov/data-hub/genome/GCA_016413895.1/) in `fasta` format. Read mapping was conducted with `bowtie2` [@Langmead2012] and the consensus genome sequences (in `fasta` format) were reconstructed by using `samtools` and `bcftools` [@Danecek2021]. 
+
+## Data requirements
+
+- **Input:** `GCA_016413895.1_Elo_Vpla-A_principal_1.0_genomic_chrmosomes.fna` reference genome and `$SRA_R1_trimmed.fastq.gz` and `$SRA_R2_trimmed.fastq.gz` files.
+- **Output:** `"$SRA"_consensus.fa` containing newly assembled genome sequences for each sample.
+
+## Dependencies
+
+`bowtie2` is available on [GitHub](https://github.com/BenLangmead/bowtie2), but it can also be installed with [Bioconda](https://anaconda.org/) as follows:
+
+```{bash echo = T, eval = F}
+#Install bowtie2 with Bioconda
+conda install bowtie2
+```
+
+`samtools` and `bcftools` are available on [GitHub](https://github.com/samtools/).
+
+## Code
+
+The code to execute these analyses is presented below:
 
 ```{bash echo = T, eval= F}
 # 1. Declare variable with sample name (if not already done)
@@ -301,17 +368,6 @@ write.table(conFasta, paste0(SRA, "_consensus.fa"), row.names = F, col.names=F, 
 # 8. Quit R
 quit(save="no")
 ```
-
-## Installing software
-
-`bowtie2` is available on [GitHub](https://github.com/BenLangmead/bowtie2), but it can also be installed with [Bioconda](https://anaconda.org/) as follows:
-
-```{bash echo = T, eval = F}
-#Install bowtie2 with Bioconda
-conda install bowtie2
-```
-
-`samtools` and `bcftools` are available on [GitHub](https://github.com/samtools/).
 
 # Comparative chromosome level analyses
 

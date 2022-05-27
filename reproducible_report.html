@@ -11,7 +11,7 @@
 
 <meta name="author" content="Paige Ellestad and Sven Buerki - Boise State University" />
 
-<meta name="date" content="2022-05-26" />
+<meta name="date" content="2022-05-27" />
 
 <title>Reproducible report</title>
 
@@ -36,6 +36,22 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
+<link href="site_libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
+<script src="site_libs/datatables-binding-0.23/datatables.js"></script>
+<link href="site_libs/dt-core-1.11.3/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="site_libs/dt-core-1.11.3/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="site_libs/dt-core-1.11.3/js/jquery.dataTables.min.js"></script>
+<script src="site_libs/jszip-1.11.3/jszip.min.js"></script>
+<script src="site_libs/pdfmake-1.11.3/pdfmake.js"></script>
+<script src="site_libs/pdfmake-1.11.3/vfs_fonts.js"></script>
+<link href="site_libs/dt-ext-buttons-1.11.3/css/buttons.dataTables.min.css" rel="stylesheet" />
+<script src="site_libs/dt-ext-buttons-1.11.3/js/dataTables.buttons.min.js"></script>
+<script src="site_libs/dt-ext-buttons-1.11.3/js/buttons.html5.min.js"></script>
+<script src="site_libs/dt-ext-buttons-1.11.3/js/buttons.colVis.min.js"></script>
+<script src="site_libs/dt-ext-buttons-1.11.3/js/buttons.print.min.js"></script>
+<link href="site_libs/crosstalk-1.2.0/css/crosstalk.min.css" rel="stylesheet" />
+<script src="site_libs/crosstalk-1.2.0/js/crosstalk.min.js"></script>
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -377,7 +393,7 @@ div.tocify {
 <h1 class="title toc-ignore">Reproducible report</h1>
 <h3 class="subtitle">Vanilla genomics</h3>
 <h4 class="author">Paige Ellestad and Sven Buerki - Boise State University</h4>
-<h4 class="date">2022-05-26</h4>
+<h4 class="date">2022-05-27</h4>
 
 </div>
 
@@ -398,8 +414,9 @@ $(document).ready(function() {
 </div>
 <div id="data" class="section level1" number="2">
 <h1><span class="header-section-number">2</span> Data</h1>
-<p>This project relies on paired-end Illumina short-read data (2x150bp) stored in <code>fastq</code> format and compressed using <code>gz</code> protocol. The data produced in this project are deposited on NCBI under BioProject (pending) and SRA accessions XXX-ZZZ. We are also using data from BioProject <a href="https://www.ncbi.nlm.nih.gov/bioproject/PRJNA633886/">PRJNA633886</a> published in <span class="citation"><a href="#ref-Hasing2020" role="doc-biblioref">Hasing et al.</a> (<a href="#ref-Hasing2020" role="doc-biblioref">2020</a>)</span>.</p>
-<!--- PAIGE: Please provide data to include a Table with samples information -->
+<p>This project relies on paired-end Illumina short-read data (2x150bp) in <code>fastq.gz</code> format generated on an Illumina HiSeq 2500 instrument. The data produced in this project are deposited on NCBI under BioProject (PRJNA841950) and SRA accessions SRR19374404-SRR19374419. We are also using data from the BioProject <a href="https://www.ncbi.nlm.nih.gov/bioproject/PRJNA633886/">PRJNA633886</a> published in <span class="citation"><a href="#ref-Hasing2020" role="doc-biblioref">Hasing et al.</a> (<a href="#ref-Hasing2020" role="doc-biblioref">2020</a>)</span>. Please find below further information on our sampling (herbarium specimens are deposited at HEM, Universidad de Ciencias y Artes de Chiapas, Mexico):</p>
+<div id="htmlwidget-2cfd242493f95794a1f2" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-2cfd242493f95794a1f2">{"x":{"filter":"none","vertical":false,"extensions":["Buttons"],"data":[["MEX12","MEX13","MEX14","MEX19","MEX20","MEX26","MEX31","MEX36","MEX41","MEX51","MEX59","MEX67","MEX69","MEX79"],["SAMN28632720","SAMN28632721","SAMN28632722","SAMN28632723","SAMN28632724","SAMN28632725","SAMN28632726","SAMN28632727","SAMN28632728","SAMN28632729","SAMN28632730","SAMN28632732","SAMN28632733","SAMN28632734"],["SRR19374418","SRR19374411","SRR19374410","SRR19374409","SRR19374408","SRR19374407","SRR19374406","SRR19374405","SRR19374404","SRR19374417","SRR19374416","SRR19374414","SRR19374413","SRR19374412"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>Sample_ID<\/th>\n      <th>BioSample<\/th>\n      <th>SRA<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"dom":"Blfrtip","buttons":["copy","csv","excel","pdf","print"],"columnDefs":[],"order":[],"autoWidth":false,"orderClasses":false,"rowCallback":"function(row, data, displayNum, displayIndex, dataIndex) {\nvar value=data[0]; $(this.api().cell(row, 0).node()).css({'font-weight':'bold'});\n}"}},"evals":["options.rowCallback"],"jsHooks":[]}</script>
 </div>
 <div id="prjstr" class="section level1" number="3">
 <h1><span class="header-section-number">3</span> Project structure</h1>
@@ -512,7 +529,21 @@ TrimmomaticPE -threads 30 /media/SeaGate/Vanilla_SRA/Raw_Data/&quot;$SRA&quot;_1
 </div>
 <div id="genome-size-and-heterozygosity" class="section level1" number="8">
 <h1><span class="header-section-number">8</span> Genome size and heterozygosity</h1>
-<p>To infer the genome size and level of heterozygosity of <em>Vanilla planifolia</em> samples based on cleaned trimmed data, we are using the method implemented in <code>GenomScope 2.0</code> <span class="citation">(<a href="#ref-RanalloBenavidez2020" role="doc-biblioref">Ranallo-Benavidez et al., 2020</a>)</span>, which relies on k-mers (k=21) inferred by <code>JellyFish</code> <span class="citation">(<a href="#ref-Jellyfish2011" role="doc-biblioref">Marçais and Kingsford, 2011</a>)</span>. The commands are as follows:</p>
+<p>In this section, we are providing information to estimate genome sizes and levels of heterozygosity for the <em>Vanilla planifolia</em> samples inferred using the approach implemented in <code>GenomScope 2.0</code> <span class="citation">(<a href="#ref-RanalloBenavidez2020" role="doc-biblioref">Ranallo-Benavidez et al., 2020</a>)</span>, which relies on k-mers (k=21) inferred by <code>JellyFish</code> <span class="citation">(<a href="#ref-Jellyfish2011" role="doc-biblioref">Marçais and Kingsford, 2011</a>)</span>.</p>
+<div id="data-requirements-2" class="section level2" number="8.1">
+<h2><span class="header-section-number">8.1</span> Data requirements</h2>
+<ul>
+<li><strong>Input:</strong> <code>$SRA_R1_trimmed.fastq.gz</code> and <code>$SRA_R2_trimmed.fastq.gz</code> containing cleaned paired reads from <code>Trimmomatic</code>.</li>
+<li><strong>Output:</strong> <code>21mer_trimmed_"$SRA"_pe12.histo</code> files from <code>JellyFish</code> used as input for the <code>GenomeScope 2</code> analysis. The latter analysis will generate plots stored in <code>png</code> format. You will also need to store <code>kcov</code> provided by <code>GenomeScope 2</code> for the <code>smudgeplot</code> analyses.</li>
+</ul>
+</div>
+<div id="dependencies-3" class="section level2" number="8.2">
+<h2><span class="header-section-number">8.2</span> Dependencies</h2>
+<p><code>GenomScope 2.0</code> is available on <a href="https://github.com/tbenavi1/genomescope2.0">GitHub</a> and <code>JellyFish</code> is available <a href="https://genome.umd.edu/jellyfish.html#Release">here</a>.</p>
+</div>
+<div id="code-3" class="section level2" number="8.3">
+<h2><span class="header-section-number">8.3</span> Code</h2>
+<p>The commands to conduct these analyses are as follows:</p>
 <pre class="bash"><code># 1. Navigate to right location
 cd ../JellyFish &amp;&amp;
 
@@ -526,14 +557,25 @@ genomescope.R -i 21mer_trimmed_&quot;$SRA&quot;_pe12.histo -o output -k 21
 # Or go online ti run analysis with histo file
 http://qb.cshl.edu/genomescope/genomescope2.0/</code></pre>
 <p><strong>Note:</strong> You need to record <code>kcov</code> from the <code>GenomeScope</code> output to set the <code>L</code> parameter in the <code>smudgeplot</code> analysis (see below).</p>
-<div id="installing-software" class="section level2" number="8.1">
-<h2><span class="header-section-number">8.1</span> Installing software</h2>
-<p><code>GenomScope 2.0</code> is available on <a href="https://github.com/tbenavi1/genomescope2.0">GitHub</a> and <code>JellyFish</code> is available <a href="https://genome.umd.edu/jellyfish.html#Release">here</a>.</p>
 </div>
 </div>
 <div id="ploidy-level-and-genome-complexity" class="section level1" number="9">
 <h1><span class="header-section-number">9</span> Ploidy level and genome complexity</h1>
-<p>We have inferred ploidy level of <em>Vanilla planifolia</em> samples and further investigated their genomic complexity (focusing on heterozygous k-mers) by applying the approach implemented in <code>smudgeplot</code> <span class="citation">(<a href="#ref-RanalloBenavidez2020" role="doc-biblioref">Ranallo-Benavidez et al., 2020</a>)</span>, which relies on k-mers (k=21) inferred by <code>KMC</code> <span class="citation">(<a href="#ref-KMC2017" role="doc-biblioref">Kokot et al., 2017</a>)</span>. The commands are as follows:</p>
+<p>Ploidy levels of <em>Vanilla planifolia</em> samples and their genomic complexity (focusing on heterozygous k-mers) were inferred by applying the approach implemented in <code>smudgeplot</code> <span class="citation">(<a href="#ref-RanalloBenavidez2020" role="doc-biblioref">Ranallo-Benavidez et al., 2020</a>)</span>, which relies on k-mers (k=21) inferred by <code>KMC</code> <span class="citation">(<a href="#ref-KMC2017" role="doc-biblioref">Kokot et al., 2017</a>)</span>.</p>
+<div id="data-requirements-3" class="section level2" number="9.1">
+<h2><span class="header-section-number">9.1</span> Data requirements</h2>
+<ul>
+<li><strong>Input:</strong> <code>$SRA_R1_trimmed.fastq.gz</code> and <code>$SRA_R2_trimmed.fastq.gz</code> containing cleaned paired reads from <code>Trimmomatic</code> and <code>kcov</code> values from the <code>GenomeScope</code> analyses.</li>
+<li><strong>Output:</strong> <code>kmcdb_"$SRA"_L"$L"_U"$U"_coverages.tsv</code> files from <code>KMC</code>. These files will be used as input for the <code>smudgeplot</code> analyses, which will output plots in <code>png</code> format.</li>
+</ul>
+</div>
+<div id="dependencies-4" class="section level2" number="9.2">
+<h2><span class="header-section-number">9.2</span> Dependencies</h2>
+<p><code>KMC</code> is available on <a href="https://github.com/refresh-bio/KMC">GitHub</a> and <code>smudgeplot</code> is also available on <a href="https://github.com/KamilSJaron/smudgeplot">GitHub</a>.</p>
+</div>
+<div id="code-4" class="section level2" number="9.3">
+<h2><span class="header-section-number">9.3</span> Code</h2>
+<p>The commands to conduct these analyses are as follows:</p>
 <pre class="bash"><code># 1.Navigate to right folder
 cd ../Smudgeplot/ &amp;&amp;
 
@@ -561,14 +603,28 @@ smudge_pairs kmcdb_&quot;$SRA&quot;_L&quot;$L&quot;_U&quot;$U&quot; kmcdb_&quot;
 # Generate the smudgeplot
 #Run R code to produce smudgeplot (R package must be installed)
 smudgeplot.py plot kmcdb_&quot;$SRA&quot;_L&quot;$L&quot;_U&quot;$U&quot;_coverages.tsv -o &quot;$SRA&quot;_L&quot;$L&quot;_U&quot;$U&quot; -k 21</code></pre>
-<div id="installing-software-1" class="section level2" number="9.1">
-<h2><span class="header-section-number">9.1</span> Installing software</h2>
-<p><code>KMC</code> is available on <a href="https://github.com/refresh-bio/KMC">GitHub</a> and <code>smudgeplot</code> is also available on <a href="https://github.com/KamilSJaron/smudgeplot">GitHub</a>.</p>
 </div>
 </div>
 <div id="reconstructing-genome-sequences" class="section level1" number="10">
 <h1><span class="header-section-number">10</span> Reconstructing genome sequences</h1>
-<p>Genome reconstructions (at chromosome scale) were carried out by mapping the cleaned trimmed reads to the <em>Vanilla planifolia</em> Daphna reference genome (<a href="https://www.ncbi.nlm.nih.gov/data-hub/genome/GCA_016413895.1/">GCA_016413895.1</a> in <code>fasta</code> format. Read mapping was conducted with <code>bowtie2</code> <span class="citation">(<a href="#ref-Langmead2012" role="doc-biblioref">Langmead and Salzberg, 2012</a>)</span> and the consensus genome sequences (in <code>fasta</code> format) were reconstructed by using <code>samtools</code> and <code>bcftools</code> <span class="citation">(<a href="#ref-Danecek2021" role="doc-biblioref">Danecek et al., 2021</a>)</span>. The code to execute these analyses is presented below:</p>
+<p>Genome reconstructions (at chromosome scale) were carried out by mapping the cleaned trimmed reads to the <em>Vanilla planifolia</em> Daphna reference genome (<a href="https://www.ncbi.nlm.nih.gov/data-hub/genome/GCA_016413895.1/">GCA_016413895.1</a> in <code>fasta</code> format. Read mapping was conducted with <code>bowtie2</code> <span class="citation">(<a href="#ref-Langmead2012" role="doc-biblioref">Langmead and Salzberg, 2012</a>)</span> and the consensus genome sequences (in <code>fasta</code> format) were reconstructed by using <code>samtools</code> and <code>bcftools</code> <span class="citation">(<a href="#ref-Danecek2021" role="doc-biblioref">Danecek et al., 2021</a>)</span>.</p>
+<div id="data-requirements-4" class="section level2" number="10.1">
+<h2><span class="header-section-number">10.1</span> Data requirements</h2>
+<ul>
+<li><strong>Input:</strong> <code>GCA_016413895.1_Elo_Vpla-A_principal_1.0_genomic_chrmosomes.fna</code> reference genome and <code>$SRA_R1_trimmed.fastq.gz</code> and <code>$SRA_R2_trimmed.fastq.gz</code> files.</li>
+<li><strong>Output:</strong> <code>"$SRA"_consensus.fa</code> containing newly assembled genome sequences for each sample.</li>
+</ul>
+</div>
+<div id="dependencies-5" class="section level2" number="10.2">
+<h2><span class="header-section-number">10.2</span> Dependencies</h2>
+<p><code>bowtie2</code> is available on <a href="https://github.com/BenLangmead/bowtie2">GitHub</a>, but it can also be installed with <a href="https://anaconda.org/">Bioconda</a> as follows:</p>
+<pre class="bash"><code>#Install bowtie2 with Bioconda
+conda install bowtie2</code></pre>
+<p><code>samtools</code> and <code>bcftools</code> are available on <a href="https://github.com/samtools/">GitHub</a>.</p>
+</div>
+<div id="code-5" class="section level2" number="10.3">
+<h2><span class="header-section-number">10.3</span> Code</h2>
+<p>The code to execute these analyses is presented below:</p>
 <pre class="bash"><code># 1. Declare variable with sample name (if not already done)
 SRA=Van65 &amp;&amp; # Please adjust to your sample
 
@@ -625,12 +681,6 @@ write.table(conFasta, paste0(SRA, &quot;_consensus.fa&quot;), row.names = F, col
 
 # 8. Quit R
 quit(save=&quot;no&quot;)</code></pre>
-<div id="installing-software-2" class="section level2" number="10.1">
-<h2><span class="header-section-number">10.1</span> Installing software</h2>
-<p><code>bowtie2</code> is available on <a href="https://github.com/BenLangmead/bowtie2">GitHub</a>, but it can also be installed with <a href="https://anaconda.org/">Bioconda</a> as follows:</p>
-<pre class="bash"><code>#Install bowtie2 with Bioconda
-conda install bowtie2</code></pre>
-<p><code>samtools</code> and <code>bcftools</code> are available on <a href="https://github.com/samtools/">GitHub</a>.</p>
 </div>
 </div>
 <div id="comparative-chromosome-level-analyses" class="section level1" number="11">
@@ -755,7 +805,7 @@ heatmap.2(as.matrix(PercIdMat), scale = &quot;none&quot;, col = bluered(100),
           trace = &quot;none&quot;, density.info = &quot;none&quot;, cexRow = .8)
 dev.off()</code></pre>
 </div>
-<div id="installing-software-3" class="section level2" number="11.5">
+<div id="installing-software" class="section level2" number="11.5">
 <h2><span class="header-section-number">11.5</span> Installing software</h2>
 <p>The protocol to install <code>minimap2</code> is described <a href="https://github.com/lh3/minimap2">here</a>. Apart from <code>pafCoordsDotPlotly.R</code> (see below), the other R packages can be installed as follows:</p>
 <pre class="r"><code># 1. Install pafr with devtools
@@ -810,53 +860,50 @@ Documents for R</em>. R package version 2.14. 2022. &lt;URL:
 <p>[2] C. Boettiger. <em>knitcitations: Citations for Knitr Markdown Files</em>.
 R package version 1.0.12. 2021. &lt;URL:
 <a href="https://github.com/cboettig/knitcitations" class="uri">https://github.com/cboettig/knitcitations</a>&gt;.</p>
-<p>[3] J. Cheng, B. Karambelkar, and Y. Xie. <em>leaflet: Create Interactive
-Web Maps with the JavaScript Leaflet Library</em>. R package version 2.1.1.
-2022. &lt;URL: <a href="https://rstudio.github.io/leaflet/" class="uri">https://rstudio.github.io/leaflet/</a>&gt;.</p>
-<p>[4] M. C. Koohafkan. <em>kfigr: Integrated Code Chunk Anchoring and
+<p>[3] M. C. Koohafkan. <em>kfigr: Integrated Code Chunk Anchoring and
 Referencing for R Markdown Documents</em>. R package version 1.2.1. 2021.
 &lt;URL: <a href="https://github.com/mkoohafkan/kfigr" class="uri">https://github.com/mkoohafkan/kfigr</a>&gt;.</p>
-<p>[5] R Core Team. <em>R: A Language and Environment for Statistical
+<p>[4] R Core Team. <em>R: A Language and Environment for Statistical
 Computing</em>. R Foundation for Statistical Computing. Vienna, Austria,
 2019. &lt;URL: <a href="https://www.R-project.org/" class="uri">https://www.R-project.org/</a>&gt;.</p>
-<p>[6] H. Wickham, J. Bryan, and M. Barrett. <em>usethis: Automate Package
+<p>[5] H. Wickham, J. Bryan, and M. Barrett. <em>usethis: Automate Package
 and Project Setup</em>. R package version 2.1.5. 2021. &lt;URL:
 <a href="https://CRAN.R-project.org/package=usethis" class="uri">https://CRAN.R-project.org/package=usethis</a>&gt;.</p>
-<p>[7] H. Wickham, R. François, L. Henry, et al. <em>dplyr: A Grammar of Data
+<p>[6] H. Wickham, R. François, L. Henry, et al. <em>dplyr: A Grammar of Data
 Manipulation</em>. R package version 1.0.9. 2022. &lt;URL:
 <a href="https://CRAN.R-project.org/package=dplyr" class="uri">https://CRAN.R-project.org/package=dplyr</a>&gt;.</p>
-<p>[8] H. Wickham, J. Hester, W. Chang, et al. <em>devtools: Tools to Make
+<p>[7] H. Wickham, J. Hester, W. Chang, et al. <em>devtools: Tools to Make
 Developing R Packages Easier</em>. R package version 2.4.3. 2021. &lt;URL:
 <a href="https://CRAN.R-project.org/package=devtools" class="uri">https://CRAN.R-project.org/package=devtools</a>&gt;.</p>
-<p>[9] Y. Xie. <em>bookdown: Authoring Books and Technical Documents with R
+<p>[8] Y. Xie. <em>bookdown: Authoring Books and Technical Documents with R
 Markdown</em>. ISBN 978-1138700109. Boca Raton, Florida: Chapman and
 Hall/CRC, 2016. &lt;URL: <a href="https://bookdown.org/yihui/bookdown" class="uri">https://bookdown.org/yihui/bookdown</a>&gt;.</p>
-<p>[10] Y. Xie. <em>bookdown: Authoring Books and Technical Documents with R
+<p>[9] Y. Xie. <em>bookdown: Authoring Books and Technical Documents with R
 Markdown</em>. R package version 0.26. 2022. &lt;URL:
 <a href="https://CRAN.R-project.org/package=bookdown" class="uri">https://CRAN.R-project.org/package=bookdown</a>&gt;.</p>
-<p>[11] Y. Xie. <em>Dynamic Documents with R and knitr</em>. 2nd. ISBN
+<p>[10] Y. Xie. <em>Dynamic Documents with R and knitr</em>. 2nd. ISBN
 978-1498716963. Boca Raton, Florida: Chapman and Hall/CRC, 2015. &lt;URL:
 <a href="https://yihui.org/knitr/" class="uri">https://yihui.org/knitr/</a>&gt;.</p>
-<p>[12] Y. Xie. <em>formatR: Format R Code Automatically</em>. R package version
+<p>[11] Y. Xie. <em>formatR: Format R Code Automatically</em>. R package version
 1.12. 2022. &lt;URL: <a href="https://github.com/yihui/formatR" class="uri">https://github.com/yihui/formatR</a>&gt;.</p>
-<p>[13] Y. Xie. “knitr: A Comprehensive Tool for Reproducible Research in
+<p>[12] Y. Xie. “knitr: A Comprehensive Tool for Reproducible Research in
 R.” In: <em>Implementing Reproducible Computational Research</em>. Ed. by V.
 Stodden, F. Leisch and R. D. Peng. ISBN 978-1466561595. Chapman and
 Hall/CRC, 2014. &lt;URL:
 <a href="http://www.crcpress.com/product/isbn/9781466561595" class="uri">http://www.crcpress.com/product/isbn/9781466561595</a>&gt;.</p>
-<p>[14] Y. Xie. <em>knitr: A General-Purpose Package for Dynamic Report
+<p>[13] Y. Xie. <em>knitr: A General-Purpose Package for Dynamic Report
 Generation in R</em>. R package version 1.39. 2022. &lt;URL:
 <a href="https://yihui.org/knitr/" class="uri">https://yihui.org/knitr/</a>&gt;.</p>
-<p>[15] Y. Xie and J. Allaire. <em>tufte: Tufte’s Styles for R Markdown
+<p>[14] Y. Xie and J. Allaire. <em>tufte: Tufte’s Styles for R Markdown
 Documents</em>. R package version 0.12. 2022. &lt;URL:
 <a href="https://github.com/rstudio/tufte" class="uri">https://github.com/rstudio/tufte</a>&gt;.</p>
-<p>[16] Y. Xie, J. Allaire, and G. Grolemund. <em>R Markdown: The Definitive
+<p>[15] Y. Xie, J. Allaire, and G. Grolemund. <em>R Markdown: The Definitive
 Guide</em>. ISBN 9781138359338. Boca Raton, Florida: Chapman and Hall/CRC,
 2018. &lt;URL: <a href="https://bookdown.org/yihui/rmarkdown" class="uri">https://bookdown.org/yihui/rmarkdown</a>&gt;.</p>
-<p>[17] Y. Xie, C. Dervieux, and E. Riederer. <em>R Markdown Cookbook</em>. ISBN
+<p>[16] Y. Xie, C. Dervieux, and E. Riederer. <em>R Markdown Cookbook</em>. ISBN
 9780367563837. Boca Raton, Florida: Chapman and Hall/CRC, 2020. &lt;URL:
 <a href="https://bookdown.org/yihui/rmarkdown-cookbook" class="uri">https://bookdown.org/yihui/rmarkdown-cookbook</a>&gt;.</p>
-<p>[18] H. Zhu. <em>kableExtra: Construct Complex Table with kable and Pipe
+<p>[17] H. Zhu. <em>kableExtra: Construct Complex Table with kable and Pipe
 Syntax</em>. R package version 1.3.4. 2021. &lt;URL:
 <a href="https://CRAN.R-project.org/package=kableExtra" class="uri">https://CRAN.R-project.org/package=kableExtra</a>&gt;.</p>
 </div>
