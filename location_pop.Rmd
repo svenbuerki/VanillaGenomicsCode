@@ -8,26 +8,26 @@ require(leaflet)
 require(bookdown)
 ```
 
-Map showing locations of the two populations sampled in this study. Seeds from one mother plant were collected in each population and used to generate the 45 individuals included in this [experiment](Analyses_rooting.html). The population `ID3` corresponds to the G1 drought-tolerant genotype, whereas the `UT2` population corresponds to G2 drought-sensitive genotype.
+Map showing locations of the plantations where *Vanilla planifolia* samples were collected for this study.
 
-```{r map, echo=F, eval=T, width="100%"}
+```{r map, echo=F, eval=T}
 # Matrix of lat long for locations
-loc <- matrix(ncol=2, nrow=2)
-colnames(loc) <- c("lat", "long")
-rownames(loc) <- c("ID3", "UT2")
+loc <- read.csv("Data/reseq_mex_records.csv")
+#Create vector connecting to thumbnail of images
+loc$img <- paste0("Images/reseq_thumbnail_png/", loc$ID, ".png")
+#MEX20 does nothave an image
+loc$img[which(loc$ID == "MEX20")] <- ""
 
-# ID3 - G1 (drought-tolerant)
-loc[1,] <- c(43.336, -116.964)
-
-# UT2 - G2 (drought-sensitive)
-loc[2,] <- c(38.306, -109.387)
-
-# Convert matrix into data.frame
-loc <- as.data.frame(loc)
+#Create popup
+contenido <- paste(sep = "<br/>",
+                   paste0("<img src='", loc$img, "' />"),
+                   paste0("<b>Name: </b>", loc$ID),
+                   paste0("<b>Place: </b>", loc$municipality)
+                   )
 
 # Produce map
-m <- leaflet() %>%
+m <- leaflet(width = "100%") %>%
       addTiles() %>%
-      addMarkers(lat = loc$lat, label = rownames(loc), lng = loc$long)
+      addMarkers(lat = loc$latitude, label = loc$ID, lng = loc$longitude, popup = contenido)
 m
 ```

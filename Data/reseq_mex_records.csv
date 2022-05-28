@@ -1,0 +1,17 @@
+ID,latitude,longitude,region_collected,source,phenotype,ITS_haplotype,rbcL_haplotype,farmer_ethnicity,state,municipality
+MEX6,20.4652,-97.16204,1,"cultivated, papantla",mansa,3,b,Mexican,Veracruz de Ignacio de la Llave,Papantla
+MEX12,20.76067,-97.42194,1,"cultivated, papantla",na (just fruit),5,a,Totonaco,Veracruz de Ignacio de la Llave,Tuxpan
+MEX13,20.49721,-97.4123,1,n/a,mansa,4,a,n/a,Veracruz de Ignacio de la Llave,Poza Rica de Hidalgo
+MEX14,20.49721,-97.4123,1,n/a,mansa,8,a,n/a,Veracruz de Ignacio de la Llave,Poza Rica de Hidalgo
+MEX19,20.362,-97.24266,1,"cultivated, papantla",mansa,14,a,Mexican,Veracruz de Ignacio de la Llave,Papantla
+MEX20,20.25587,-97.21225,1,n/a,no photo??,1,a,n/a,Veracruz de Ignacio de la Llave,Papantla
+MEX26,20.39334,-97.21009,1,n/a,mansa,7,a,n/a,Veracruz de Ignacio de la Llave,Papantla
+MEX31,20.43579,-97.31344,1,n/a,mansa,3,b,n/a,Veracruz de Ignacio de la Llave,Papantla
+MEX36,20.45173,-97.10315,1,n/a,mansa,21,a,n/a,Veracruz de Ignacio de la Llave,Gutierrez Zamora
+MEX41,20.50053,-97.21484,1,n/a,variegata,3,a,n/a,Veracruz de Ignacio de la Llave,Papantla
+MEX51,20.23463,-96.90375,1,"cultivated, papantla",mansa,22,a,Mexican,Veracruz de Ignacio de la Llave,San Rafael
+MEX59,19.60167,-96.9109,2,"cultivated, Oaxaca",mansa,3,a,Mexican,Veracruz de Ignacio de la Llave,Jilotepec
+MEX65,18.93781,-96.85046,2,"cultivated, Oaxaca",mansa,3,a,n/a,Veracruz de Ignacio de la Llave,Amatlan de los Reyes
+MEX67,17.89284,-96.32716,3,"wild, Chinantla",mansa,16,c,n/a,Oaxaca,San Juan Bautista Valle Nacional
+MEX69,17.9009,-96.33352,3,"cultivated, Tuxtepec",mansa,3,a,n/a,Oaxaca,San Juan Bautista Valle Nacional
+MEX79,17.85271,-96.33303,3,"wild, Chinantla",variegata,3,a,Chinanteco,Oaxaca,San Juan Bautista Valle Nacional
