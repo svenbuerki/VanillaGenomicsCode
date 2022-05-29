@@ -18,16 +18,19 @@ loc$img <- paste0("Images/reseq_thumbnail_png/", loc$ID, ".png")
 #MEX20 does nothave an image
 loc$img[which(loc$ID == "MEX20")] <- ""
 
+#Subset loc
+loc <- loc[-which(loc$ID %in% c("MEX6", "MEX65")),]
+
 #Create popup
 contenido <- paste(sep = "<br/>",
                    paste0("<img src='", loc$img, "' />"),
-                   paste0("<b>Name: </b>", loc$ID),
-                   paste0("<b>Place: </b>", loc$municipality)
+                   paste0("<b>Sample ID: </b>", loc$ID),
+                   paste0("<b>Municipality: </b>", loc$municipality)
                    )
 
 # Produce map
 m <- leaflet(width = "100%") %>%
       addTiles() %>%
-      addMarkers(lat = loc$latitude, label = loc$ID, lng = loc$longitude, popup = contenido)
+      addMarkers(lat = round(as.numeric(loc$latitude),3), label = loc$ID, lng = round(as.numeric(loc$longitude),3), popup = contenido)
 m
 ```
