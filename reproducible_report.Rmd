@@ -122,7 +122,7 @@ DT::datatable(redtsv, extensions = 'Buttons', options = list(dom = 'Blfrtip', bu
 
 # Overview of analytical workflow
 
-This section provides an overview of the analyses conducted in this study aiming at comparing the genome complexity and structure of samples of *Vanilla planifolia* from Mexico and data available on NCBI. Detials on the software and associated code for the following analyses are presented in this document: 
+This section provides an overview of the analyses conducted in this study aiming at comparing the genome complexity and structure of samples of *Vanilla planifolia* from Mexico and data available on NCBI. Details on the software and associated code for the following analyses are presented in this document: 
 
 1. [Setting working environment](#setenv).
 2. [Downloading SRA files](#dwndata).
@@ -267,16 +267,34 @@ genomescope.R -i 21mer_trimmed_"$SRA"_pe12.histo -o output -k 21
 http://qb.cshl.edu/genomescope/genomescope2.0/
 ```
 
-**Note:** You need to record `kcov` from the `GenomeScope` output to set the `L` parameter in the `smudgeplot` analysis (see below).
+**Note:** You need to record `kcov` from the `GenomeScope` output to set the `L` parameter in the `smudgeplot` analysis (Figure \@ref(fig:GenomeScopeFig)).
 
-## Processing output images
+## Output
 
-The output of the GenomeScope analysis are `png` files and these do not contain headers with the sample names.
+Please find below an example of the output from `GenomeScope2` (Figure \@ref(fig:GenomeScopeFig)). The `kcov` variable that we will ne needing for the `smudgeplot` analysis is available in the header of Figure \@ref(fig:GenomeScopeFig).
+
+```{r GenomeScopeFig, echo=FALSE, fig.cap="Example of a GenomeScope output.", out.width = '100%'}
+knitr::include_graphics("Images/GenomescopeV2_images/Van67.png")
+```
+
+However, sadly, the output of the `GenomeScope2` analysis do not contain information on the sample and we are proposing here some `R` code to add this information to all the `png` outputs.
+
+## Processing outputs
+
+The code below relies on the `R` package *magick*, which can be installed as follows:
+
+```{r echo = T, eval = F}
+#Launch R and then type this command
+install.packages("magick")
+```
+
 
 ```{r eval=FALSE, echo = T}
 ###~~~
 #Process png output from GenomeScope
 ###~~~
+# Aim: Add Sample ID to GenomeScope png
+# Output: Newly annotated png images will be saved in /GenomeScope_annotated folder.
 
 #1. Load package
 library(magick)
@@ -315,6 +333,11 @@ for(i in 1:length(imgList)){
 }
 ```
 
+Here is an example of the newly annotated output `png` file (see Figure \@ref(fig:GenomeScopeFigAnn)).
+
+```{r GenomeScopeFigAnn, echo=FALSE, fig.cap="Example of a newly annotated GenomeScope output with sample ID.", out.width = '100%'}
+knitr::include_graphics("Images/GenomescopeV2_images/GenomeScope_annotated/Annotated_MEX67.png")
+```
 
 # Ploidy level and genome complexity {#cyt}
 
@@ -361,6 +384,14 @@ smudge_pairs kmcdb_"$SRA"_L"$L"_U"$U" kmcdb_"$SRA"_L"$L"_U"$U"_coverages.tsv kmc
 # Generate the smudgeplot
 #Run R code to produce smudgeplot (R package must be installed)
 smudgeplot.py plot kmcdb_"$SRA"_L"$L"_U"$U"_coverages.tsv -o "$SRA"_L"$L"_U"$U" -k 21
+```
+
+## Output
+
+Please find below an example of the output from `smudgeplot` (Figure \@ref(fig:smudeplot)).
+
+```{r smudeplot, echo=FALSE, fig.cap="Example of a smudgeplot output (log10).", out.width = '80%'}
+knitr::include_graphics("Images/Smudgeplot/Van67_L25_U800_smudgeplot_smudgeplot_log10.png")
 ```
 
 # Reconstructing genome sequences {#conseq}
@@ -488,6 +519,42 @@ cd ../Minimap2 &&
 minimap2 -t26 -cx asm10 -k 21 ../Reference_genome/GCA_016413895.1_Elo_Vpla-A_principal_1.0_genomic_chrmosomes.fna ../Bowtie/"$SRA"_consensus.fa > aln_ref_asm10_"$SRA".paf #  asm5/asm10/asm20 - asm-to-ref mapping, for ~0.1/1/5% sequence divergence
 ```
 
+### Output
+
+Table \@ref(tab:paf) provides an example of an output a `Minimap2` analysis producing a file in `paf` format.
+
+```{r paf, echo = F, eval=TRUE, warning = FALSE, message=FALSE}
+###~~~
+#Read in paf file
+###~~~
+paf <- read.csv("Data/aln_ref_asm10_Van67.paf", sep = "\t", header = F) 
+
+###~~~
+#Plot paf table
+###~~~
+#Plot table
+knitr::kable(as.data.frame(paf), caption = "Example of an output of a Minimap2 analysis in PAF format.") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+
+```
+
+The `paf` file does not contain any headers, but information on the different variables is provided in Table \@ref(tab:pafheaders).
+
+```{r pafheaders, echo = F, eval=TRUE, warning = FALSE, message=FALSE}
+###~~~
+#Read in paf headers
+###~~~
+paf <- read.csv("Data/PAF_col_key.csv") 
+
+###~~~
+#Plot paf table
+###~~~
+#Plot table
+knitr::kable(as.data.frame(paf), caption = "Table providing information on the PAF format.") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+
+```
+
 ## Dot plots {#dotplot}
 
 ### Data requirements
@@ -510,6 +577,14 @@ cd ../DotPlot &&
 # 2. Run analysis directly from terminal using Rscript
 # You have to adjust file names 
 Rscript pafCoordsDotPlotly.R -i /media/SeaGate/Vanilla_SRA/Minimap2/aln_ref_asm10_Van65.paf -o dotPlot_aln_ref_asm10_Van65 -s -t -m 10000 -q 50000 -k 14 -l # Provide name (change to VanXX)
+```
+
+### Output
+
+Here is an example of the output of the dot plot analysis inferred with `pafCoordsDotPlotly.R` on `MEX67` (see Figure \@ref(fig:dotplot)).
+
+```{r dotplot, echo=FALSE, fig.cap="Example of a newly annotated GenomeScope output with sample ID.", out.width = '100%'}
+knitr::include_graphics("Images/dotPlot_aln_ref_asm10_Van67.png")
 ```
 
 ## Genome coverage maps {#covmap}
