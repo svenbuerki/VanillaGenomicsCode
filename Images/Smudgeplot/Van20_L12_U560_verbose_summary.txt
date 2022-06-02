@@ -1,0 +1,18 @@
+1n coverage estimates (Coverage of every haplotype; Don't confuse with genome coverage which is (ploidy * 1n coverage).)
+* User defined 1n coverage:	
+* Subset 1n coverage estimate:	30.5
+* Highest peak 1n coverage estimate:	32.2
+1n coverage used in smudgeplot (one of the three above):	32.2
+* Proposed ploidy:	2
+* Minimal number of heterozygous loci:	2770837
+Note: This number is NOT an estimate of the total number heterozygous loci, it's merly setting the lower boundary if the inference of heterozygosity peaks is correct.
+* Proportion of heterozygosity carried by pairs in different genome copies (table)
+  genome_copies propotion_of_heterozygosity
+1             2                        0.96
+2             3                        0.00
+3             4                        0.04
+* Proportion of heterozygosity carried by paralogs:	0.043
+* Summary of all detected peaks (table)
+  peak kmers [#] kmers [proportion] summit B / (A + B) summit A + B
+1   AB  58187570               0.96               0.48        59.17
+2 AABB   2586806               0.04               0.48       131.51

@@ -1,0 +1,19 @@
+
+######################
+## INPUT PROCESSING ##
+######################
+
+#############
+## SUMMARY ##
+#############
+detecting two smudges at the same positions, not enough data for this number of bins lowering number of bins to 	35
+detecting two smudges at the same positions, not enough data for this number of bins lowering number of bins to 	30
+1 peaks of kmer pairs detected with coverage < (1n_coverage * 2) = 62.6
+  kmers_in_peak[#] kmers_in_peak[proportion] summit B / (A + B) summit A + B
+4          1038217                      0.03               0.29        45.27
+This might be due to kmers with sequencing errors present in the kmer dump.
+Increasing L might help remove erroneous kmers.
+
+##########
+## PLOT ##
+##########

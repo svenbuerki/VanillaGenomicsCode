@@ -39,6 +39,7 @@ library(kfigr)
 library(dplyr)
 library(kableExtra)
 library(tufte)
+require(leaflet)
 
 #Generate BibTex citation file for all R packages used to produce report
 knitr::write_bib(.packages(), file = 'packages.bib')
@@ -52,10 +53,42 @@ knitr::write_bib(.packages(), file = 'packages.bib')
 
 This reproducible report provides evidence on the data, software, packages and code used to perform the genomic analyses described in Ellestad *et al.* (in prep.). All the analyses were performed on a DELL Precision 7920 with the Ubuntu 18.04.6 LTS (GNU/Linux 4.15.0-177-generic x86_64) OS at Boise State University (ID, USA) between January and June 2022.
 
-# Data
+# Sampling
 
-This project relies on paired-end Illumina short-read data (2x150bp) in `fastq.gz` format generated on an Illumina HiSeq 2500 instrument. The data produced in this project are deposited on NCBI under BioProject (PRJNA841950) and SRA accessions SRR19374404-SRR19374419. We are also using data from the BioProject [PRJNA633886](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA633886/) published in @Hasing2020. Please find below further information on our sampling (herbarium specimens are deposited at HEM, Universidad de Ciencias y Artes de Chiapas, Mexico): 
+This study focuses on *Vanilla planifolia* (Orchidaceae) and the physical specimens are deposited at HEM (Universidad de Ciencias y Artes de Chiapas, Mexico) and SRP (Boise State Univeristy, Idaho, USA).
 
+## Distribution data
+
+Map showing locations of the plantations where samples *Vanilla planifolia* were collected for this study is presented below together with images of plants in the field.
+
+```{r map, echo=F, eval=T}
+# Matrix of lat long for locations
+loc <- read.csv("Data/reseq_mex_records.csv")
+#Create vector connecting to thumbnail of images
+loc$img <- paste0("Images/reseq_thumbnail_png/", loc$ID, ".png")
+#MEX20 does nothave an image
+loc$img[which(loc$ID == "MEX20")] <- ""
+
+#Subset loc
+loc <- loc[-which(loc$ID %in% c("MEX6", "MEX65")),]
+
+#Create popup
+contenido <- paste(sep = "<br/>",
+                   paste0("<img src='", loc$img, "' />"),
+                   paste0("<b>Sample ID: </b>", loc$ID),
+                   paste0("<b>Municipality: </b>", loc$municipality)
+                   )
+
+# Produce map
+m <- leaflet(width = "100%") %>%
+      addTiles() %>%
+      addMarkers(lat = round(as.numeric(loc$latitude),3), label = loc$ID, lng = round(as.numeric(loc$longitude),3), popup = contenido)
+m
+```
+
+## Genomic data
+
+This project relies on paired-end Illumina short-read data (2x150bp) in `fastq.gz` format generated on an Illumina HiSeq 2500 instrument by Azenta (New Jersey, USA). The data produced in this project are deposited on NCBI under BioProject (PRJNA841950) and SRA accessions SRR19374404-SRR19374419. We are also using data from the BioProject [PRJNA633886](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA633886/) published in @Hasing2020. 
 
 ```{r tabsampling, eval = T, echo=F, warning = FALSE, message=FALSE}
 ###~~~
@@ -87,9 +120,23 @@ DT::datatable(redtsv, extensions = 'Buttons', options = list(dom = 'Blfrtip', bu
 
 ```
 
-# Project structure {#prjstr}
+# Overview of analytical workflow
 
-Although the data underpinning the analyses are not presented here (due to size limitations), we are providing an overview of our project structure to facilitate understanding of the code (see Figure \@ref(fig:prjstr)).
+This section provides an overview of the analyses conducted in this study aiming at comparing the genome complexity and structure of samples of *Vanilla planifolia* from Mexico and data available on NCBI. Detials on the software and associated code for the following analyses are presented in this document: 
+
+1. [Setting working environment](#setenv).
+2. [Downloading SRA files](#dwndata).
+3. [Conducting reads trimming](#trim).
+4. [Genome size and heterozygosity](#GS).
+5. [Ploidy level and genome complexity](#cyt).
+6. [Reconstructing genome sequences](#conseq).
+7. [Comparative chromosome level analyses](#comgen).
+
+# Setting working environment {#setenv}
+
+## Project structure {#prjstr}
+
+An overview of our project structure is presented here to facilitate the understanding of the data flow and code (see Figure \@ref(fig:prjstr)).
 
 ```{r prjstr, echo=FALSE, fig.cap="Overview of the project structure applied to analyze data for the Vanilla genomics project.", out.width = '100%'}
 knitr::include_graphics("Images/Project_str_VanillaCode.png")
@@ -109,25 +156,13 @@ A summary of the content of each folder is provided here (in alphabetical order)
 - `Smudgeplot`: Contains `kmctools` output files used for the Smudgeplot analyses.
 - `Trimmomatic`: Contains `trimmed.fastq.gz` files used as input for the genomic analyses.
 
-# Overview of analytical workflow
+## Bioinformatic tools
 
-This section provides an overview of the analyses conducted in this study aiming at comparing the genome complexity and structure of samples of *Vanilla planifolia* from Mexico and data available on NCBI. Detials on the software and associated code for the following analyses are presented in this document: 
+Analyses presented in this report are requiring a UNIX-based OS (tested on Ubuntu 18.04.6 LTS) and `ssh` and `tmux` protocols should be installed. Please see this [website ](https://svenbuerki.github.io/Genomics-Bioinformatics/Tutorials.html) for more details and documentation. In addition, `R` is frequently used to tidy data and produce figures. All the `R` analyses were performed using R version 4.0.2 (2020-06-22) -- "Taking Off Again" and the software can be downloaded [here](https://www.r-project.org).
 
-1. [Setting environment](#setenv).
-2. [Downloading SRA files](#dwndata).
-3. [Conducting reads trimming](#trim).
-4. [Genome size and heterozygosity](#GS).
-5. [Ploidy level and genome complexity](#cyt).
-6. [Reconstructing genome sequences](#conseq).
-7. [Comparative chromosome level analyses](#comgen).
+Dependencies associated to each analysis will be presented alongside the code. 
 
-# Setting environment {#setenv}
-
-## Dependencies
-
-Analyses presented in this report are requiring a UNIX-based OS (tested on Ubuntu 18.04.6 LTS) and `ssh` and `tmux` protocols should be installed. Please see this [website ](https://svenbuerki.github.io/Genomics-Bioinformatics/Tutorials.html) for more details and documentation.
-
-## Code
+## Getting ready!
 
 We start by *i*) remotely accessing the Linux computer using `ssh` protocol (you need your user ID and IP address), *ii*) launching a `tmux` session (safe environment that can be accessed from different locations) and *iii*) navigating to the project folder (here `Vanilla_SRA`) as follows:
 
@@ -233,6 +268,52 @@ http://qb.cshl.edu/genomescope/genomescope2.0/
 ```
 
 **Note:** You need to record `kcov` from the `GenomeScope` output to set the `L` parameter in the `smudgeplot` analysis (see below).
+
+## Processing output images
+
+The output of the GenomeScope analysis are `png` files and these do not contain headers with the sample names.
+
+```{r eval=FALSE, echo = T}
+###~~~
+#Process png output from GenomeScope
+###~~~
+
+#1. Load package
+library(magick)
+
+#2. List of 
+imgList <- list.files("Images/GenomescopeV2_images/", pattern = ".png", full.names = T)
+
+#3. Create vector with sample IDs
+SamplesID <- gsub(".png", "", gsub("Van", "MEX", sapply(strsplit(imgList, split = "//"), "[[", 2)))
+#4. Create path object
+path <- strsplit(imgList[1], "//")[[1]][1]
+
+#5. Annotate images and save them in GenomeScope_annotated folder
+for(i in 1:length(imgList)){
+  #Open png
+  imraw <- magick::image_read(imgList[i])
+  
+  #Annotate png with sample ID
+  imprep <- magick::image_annotate(imraw, SamplesID[i], size = 50, color = "black", location = "+140+50")
+  
+  #Save images in GenomeScope_annotated
+  #Check if folder exists
+  # if not then creates it
+  output_dir <- file.path(paste0(path, "/GenomeScope_annotated"))
+    
+  if(dir.exists(output_dir)){
+    #print(paste0("Dir", output_dir, " already exists!"))
+  }else{
+    print(paste0("Created ", output_dir))
+    dir.create(output_dir)  
+  }
+  
+  #Save annotated image  
+  magick::image_write(imprep, path = paste0(output_dir, "/Annotated_", SamplesID[i], ".png"))
+  
+}
+```
 
 
 # Ploidy level and genome complexity {#cyt}
@@ -561,7 +642,7 @@ Now we can generate the heatmap with the `R` [*gplots*](https://github.com/talga
 library("gplots")
 
 # 2. Edit colnames and rownames for plot (from the PercIdMat object from previous code)
-colnames(PercIdMat) <- gsub("aln_ref_asm10_", "", colnames(PercIdMat))
+colnames(PercIdMat) <- gsub("Van", "MEX", gsub("aln_ref_asm10_", "", colnames(PercIdMat)))
 colnames(PercIdMat) <- gsub(".paf", "", colnames(PercIdMat))
 #rownames(PercIdMat) <- gsub("[.]1", "", rownames(PercIdMat))
 

@@ -11,7 +11,7 @@
 
 <meta name="author" content="Paige Ellestad and Sven Buerki - Boise State University" />
 
-<meta name="date" content="2022-05-27" />
+<meta name="date" content="2022-06-02" />
 
 <title>Reproducible report</title>
 
@@ -37,6 +37,13 @@
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 <script src="site_libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
+<link href="site_libs/leaflet-1.3.1/leaflet.css" rel="stylesheet" />
+<script src="site_libs/leaflet-1.3.1/leaflet.js"></script>
+<link href="site_libs/leafletfix-1.0.0/leafletfix.css" rel="stylesheet" />
+<script src="site_libs/proj4-2.6.2/proj4.min.js"></script>
+<script src="site_libs/Proj4Leaflet-1.0.1/proj4leaflet.js"></script>
+<link href="site_libs/rstudio_leaflet-1.3.1/rstudio_leaflet.css" rel="stylesheet" />
+<script src="site_libs/leaflet-binding-2.1.1/leaflet.js"></script>
 <link href="site_libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
 <script src="site_libs/datatables-binding-0.23/datatables.js"></script>
 <link href="site_libs/dt-core-1.11.3/css/jquery.dataTables.min.css" rel="stylesheet" />
@@ -370,9 +377,6 @@ div.tocify {
   <a href="heterozygosity_review.html">Heterozygosity</a>
 </li>
 <li>
-  <a href="location_pop.html">Map</a>
-</li>
-<li>
   <a href="funding.html">Acknowledgements</a>
 </li>
 <li>
@@ -393,7 +397,7 @@ div.tocify {
 <h1 class="title toc-ignore">Reproducible report</h1>
 <h3 class="subtitle">Vanilla genomics</h3>
 <h4 class="author">Paige Ellestad and Sven Buerki - Boise State University</h4>
-<h4 class="date">2022-05-27</h4>
+<h4 class="date">2022-06-02</h4>
 
 </div>
 
@@ -412,19 +416,44 @@ $(document).ready(function() {
 <h1><span class="header-section-number">1</span> Introduction</h1>
 <p>This reproducible report provides evidence on the data, software, packages and code used to perform the genomic analyses described in Ellestad <em>et al.</em> (in prep.). All the analyses were performed on a DELL Precision 7920 with the Ubuntu 18.04.6 LTS (GNU/Linux 4.15.0-177-generic x86_64) OS at Boise State University (ID, USA) between January and June 2022.</p>
 </div>
-<div id="data" class="section level1" number="2">
-<h1><span class="header-section-number">2</span> Data</h1>
-<p>This project relies on paired-end Illumina short-read data (2x150bp) in <code>fastq.gz</code> format generated on an Illumina HiSeq 2500 instrument. The data produced in this project are deposited on NCBI under BioProject (PRJNA841950) and SRA accessions SRR19374404-SRR19374419. We are also using data from the BioProject <a href="https://www.ncbi.nlm.nih.gov/bioproject/PRJNA633886/">PRJNA633886</a> published in <span class="citation"><a href="#ref-Hasing2020" role="doc-biblioref">Hasing et al.</a> (<a href="#ref-Hasing2020" role="doc-biblioref">2020</a>)</span>. Please find below further information on our sampling (herbarium specimens are deposited at HEM, Universidad de Ciencias y Artes de Chiapas, Mexico):</p>
-<div id="htmlwidget-d5fdf853d39baa245f05" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-d5fdf853d39baa245f05">{"x":{"filter":"none","vertical":false,"extensions":["Buttons"],"data":[["MEX12","MEX13","MEX14","MEX19","MEX20","MEX26","MEX31","MEX36","MEX41","MEX51","MEX59","MEX67","MEX69","MEX79"],["SAMN28632720","SAMN28632721","SAMN28632722","SAMN28632723","SAMN28632724","SAMN28632725","SAMN28632726","SAMN28632727","SAMN28632728","SAMN28632729","SAMN28632730","SAMN28632732","SAMN28632733","SAMN28632734"],["SRR19374418","SRR19374411","SRR19374410","SRR19374409","SRR19374408","SRR19374407","SRR19374406","SRR19374405","SRR19374404","SRR19374417","SRR19374416","SRR19374414","SRR19374413","SRR19374412"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>Sample_ID<\/th>\n      <th>BioSample<\/th>\n      <th>SRA<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"dom":"Blfrtip","buttons":["copy","csv","excel","pdf","print"],"columnDefs":[],"order":[],"autoWidth":false,"orderClasses":false,"rowCallback":"function(row, data, displayNum, displayIndex, dataIndex) {\nvar value=data[0]; $(this.api().cell(row, 0).node()).css({'font-weight':'bold'});\n}"}},"evals":["options.rowCallback"],"jsHooks":[]}</script>
+<div id="sampling" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> Sampling</h1>
+<p>This study focuses on <em>Vanilla planifolia</em> (Orchidaceae) and the physical specimens are deposited at HEM (Universidad de Ciencias y Artes de Chiapas, Mexico) and SRP (Boise State Univeristy, Idaho, USA).</p>
+<div id="distribution-data" class="section level2" number="2.1">
+<h2><span class="header-section-number">2.1</span> Distribution data</h2>
+<p>Map showing locations of the plantations where samples <em>Vanilla planifolia</em> were collected for this study is presented below together with images of plants in the field.</p>
+<div id="htmlwidget-3edf2038b7a1d1cd3145" style="width:100%;height:480px;" class="leaflet html-widget"></div>
+<script type="application/json" data-for="htmlwidget-3edf2038b7a1d1cd3145">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addTiles","args":["https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",null,null,{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"attribution":"&copy; <a href=\"https://openstreetmap.org\">OpenStreetMap<\/a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA<\/a>"}]},{"method":"addMarkers","args":[[20.761,20.497,20.497,20.362,20.256,20.393,20.436,20.452,20.501,20.235,19.602,17.893,17.901,17.853],[-97.422,-97.412,-97.412,-97.243,-97.212,-97.21,-97.313,-97.103,-97.215,-96.904,-96.911,-96.327,-96.334,-96.333],null,null,null,{"interactive":true,"draggable":false,"keyboard":true,"title":"","alt":"","zIndexOffset":0,"opacity":1,"riseOnHover":false,"riseOffset":250},["<img src='Images/reseq_thumbnail_png/MEX12.png' /><br/><b>Sample ID: <\/b>MEX12<br/><b>Municipality: <\/b>Tuxpan","<img src='Images/reseq_thumbnail_png/MEX13.png' /><br/><b>Sample ID: <\/b>MEX13<br/><b>Municipality: <\/b>Poza Rica de Hidalgo","<img src='Images/reseq_thumbnail_png/MEX14.png' /><br/><b>Sample ID: <\/b>MEX14<br/><b>Municipality: <\/b>Poza Rica de Hidalgo","<img src='Images/reseq_thumbnail_png/MEX19.png' /><br/><b>Sample ID: <\/b>MEX19<br/><b>Municipality: <\/b>Papantla","<img src='' /><br/><b>Sample ID: <\/b>MEX20<br/><b>Municipality: <\/b>Papantla","<img src='Images/reseq_thumbnail_png/MEX26.png' /><br/><b>Sample ID: <\/b>MEX26<br/><b>Municipality: <\/b>Papantla","<img src='Images/reseq_thumbnail_png/MEX31.png' /><br/><b>Sample ID: <\/b>MEX31<br/><b>Municipality: <\/b>Papantla","<img src='Images/reseq_thumbnail_png/MEX36.png' /><br/><b>Sample ID: <\/b>MEX36<br/><b>Municipality: <\/b>Gutierrez Zamora","<img src='Images/reseq_thumbnail_png/MEX41.png' /><br/><b>Sample ID: <\/b>MEX41<br/><b>Municipality: <\/b>Papantla","<img src='Images/reseq_thumbnail_png/MEX51.png' /><br/><b>Sample ID: <\/b>MEX51<br/><b>Municipality: <\/b>San Rafael","<img src='Images/reseq_thumbnail_png/MEX59.png' /><br/><b>Sample ID: <\/b>MEX59<br/><b>Municipality: <\/b>Jilotepec","<img src='Images/reseq_thumbnail_png/MEX67.png' /><br/><b>Sample ID: <\/b>MEX67<br/><b>Municipality: <\/b>San Juan Bautista Valle Nacional","<img src='Images/reseq_thumbnail_png/MEX69.png' /><br/><b>Sample ID: <\/b>MEX69<br/><b>Municipality: <\/b>San Juan Bautista Valle Nacional","<img src='Images/reseq_thumbnail_png/MEX79.png' /><br/><b>Sample ID: <\/b>MEX79<br/><b>Municipality: <\/b>San Juan Bautista Valle Nacional"],null,null,null,["MEX12","MEX13","MEX14","MEX19","MEX20","MEX26","MEX31","MEX36","MEX41","MEX51","MEX59","MEX67","MEX69","MEX79"],{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null]}],"limits":{"lat":[17.853,20.761],"lng":[-97.422,-96.327]}},"evals":[],"jsHooks":[]}</script>
 </div>
-<div id="prjstr" class="section level1" number="3">
-<h1><span class="header-section-number">3</span> Project structure</h1>
-<p>Although the data underpinning the analyses are not presented here (due to size limitations), we are providing an overview of our project structure to facilitate understanding of the code (see Figure <a href="#fig:prjstr">3.1</a>).</p>
+<div id="genomic-data" class="section level2" number="2.2">
+<h2><span class="header-section-number">2.2</span> Genomic data</h2>
+<p>This project relies on paired-end Illumina short-read data (2x150bp) in <code>fastq.gz</code> format generated on an Illumina HiSeq 2500 instrument by Azenta (New Jersey, USA). The data produced in this project are deposited on NCBI under BioProject (PRJNA841950) and SRA accessions SRR19374404-SRR19374419. We are also using data from the BioProject <a href="https://www.ncbi.nlm.nih.gov/bioproject/PRJNA633886/">PRJNA633886</a> published in <span class="citation"><a href="#ref-Hasing2020" role="doc-biblioref">Hasing et al.</a> (<a href="#ref-Hasing2020" role="doc-biblioref">2020</a>)</span>.</p>
+<div id="htmlwidget-a24a29e38505137fd4d3" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-a24a29e38505137fd4d3">{"x":{"filter":"none","vertical":false,"extensions":["Buttons"],"data":[["MEX12","MEX13","MEX14","MEX19","MEX20","MEX26","MEX31","MEX36","MEX41","MEX51","MEX59","MEX67","MEX69","MEX79"],["SAMN28632720","SAMN28632721","SAMN28632722","SAMN28632723","SAMN28632724","SAMN28632725","SAMN28632726","SAMN28632727","SAMN28632728","SAMN28632729","SAMN28632730","SAMN28632732","SAMN28632733","SAMN28632734"],["SRR19374418","SRR19374411","SRR19374410","SRR19374409","SRR19374408","SRR19374407","SRR19374406","SRR19374405","SRR19374404","SRR19374417","SRR19374416","SRR19374414","SRR19374413","SRR19374412"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>Sample_ID<\/th>\n      <th>BioSample<\/th>\n      <th>SRA<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"dom":"Blfrtip","buttons":["copy","csv","excel","pdf","print"],"columnDefs":[],"order":[],"autoWidth":false,"orderClasses":false,"rowCallback":"function(row, data, displayNum, displayIndex, dataIndex) {\nvar value=data[0]; $(this.api().cell(row, 0).node()).css({'font-weight':'bold'});\n}"}},"evals":["options.rowCallback"],"jsHooks":[]}</script>
+</div>
+</div>
+<div id="overview-of-analytical-workflow" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> Overview of analytical workflow</h1>
+<p>This section provides an overview of the analyses conducted in this study aiming at comparing the genome complexity and structure of samples of <em>Vanilla planifolia</em> from Mexico and data available on NCBI. Detials on the software and associated code for the following analyses are presented in this document:</p>
+<ol style="list-style-type: decimal">
+<li><a href="#setenv">Setting working environment</a>.</li>
+<li><a href="#dwndata">Downloading SRA files</a>.</li>
+<li><a href="#trim">Conducting reads trimming</a>.</li>
+<li><a href="#GS">Genome size and heterozygosity</a>.</li>
+<li><a href="#cyt">Ploidy level and genome complexity</a>.</li>
+<li><a href="#conseq">Reconstructing genome sequences</a>.</li>
+<li><a href="#comgen">Comparative chromosome level analyses</a>.</li>
+</ol>
+</div>
+<div id="setenv" class="section level1" number="4">
+<h1><span class="header-section-number">4</span> Setting working environment</h1>
+<div id="prjstr" class="section level2" number="4.1">
+<h2><span class="header-section-number">4.1</span> Project structure</h2>
+<p>An overview of our project structure is presented here to facilitate the understanding of the data flow and code (see Figure <a href="#fig:prjstr">4.1</a>).</p>
 <div class="figure"><span style="display:block;" id="fig:prjstr"></span>
 <img src="Images/Project_str_VanillaCode.png" alt="Overview of the project structure applied to analyze data for the Vanilla genomics project." width="100%" />
 <p class="caption">
-Figure 3.1: Overview of the project structure applied to analyze data for the Vanilla genomics project.
+Figure 4.1: Overview of the project structure applied to analyze data for the Vanilla genomics project.
 </p>
 </div>
 <p>A summary of the content of each folder is provided here (in alphabetical order):</p>
@@ -442,27 +471,13 @@ Figure 3.1: Overview of the project structure applied to analyze data for the Va
 <li><code>Trimmomatic</code>: Contains <code>trimmed.fastq.gz</code> files used as input for the genomic analyses.</li>
 </ul>
 </div>
-<div id="overview-of-analytical-workflow" class="section level1" number="4">
-<h1><span class="header-section-number">4</span> Overview of analytical workflow</h1>
-<p>This section provides an overview of the analyses conducted in this study aiming at comparing the genome complexity and structure of samples of <em>Vanilla planifolia</em> from Mexico and data available on NCBI. Detials on the software and associated code for the following analyses are presented in this document:</p>
-<ol style="list-style-type: decimal">
-<li><a href="#setenv">Setting environment</a>.</li>
-<li><a href="#dwndata">Downloading SRA files</a>.</li>
-<li><a href="#trim">Conducting reads trimming</a>.</li>
-<li><a href="#GS">Genome size and heterozygosity</a>.</li>
-<li><a href="#cyt">Ploidy level and genome complexity</a>.</li>
-<li><a href="#conseq">Reconstructing genome sequences</a>.</li>
-<li><a href="#comgen">Comparative chromosome level analyses</a>.</li>
-</ol>
+<div id="bioinformatic-tools" class="section level2" number="4.2">
+<h2><span class="header-section-number">4.2</span> Bioinformatic tools</h2>
+<p>Analyses presented in this report are requiring a UNIX-based OS (tested on Ubuntu 18.04.6 LTS) and <code>ssh</code> and <code>tmux</code> protocols should be installed. Please see this <a href="https://svenbuerki.github.io/Genomics-Bioinformatics/Tutorials.html">website</a> for more details and documentation. In addition, <code>R</code> is frequently used to tidy data and produce figures. All the <code>R</code> analyses were performed using R version 4.0.2 (2020-06-22) – “Taking Off Again” and the software can be downloaded <a href="https://www.r-project.org">here</a>.</p>
+<p>Dependencies associated to each analysis will be presented alongside the code.</p>
 </div>
-<div id="setenv" class="section level1" number="5">
-<h1><span class="header-section-number">5</span> Setting environment</h1>
-<div id="dependencies" class="section level2" number="5.1">
-<h2><span class="header-section-number">5.1</span> Dependencies</h2>
-<p>Analyses presented in this report are requiring a UNIX-based OS (tested on Ubuntu 18.04.6 LTS) and <code>ssh</code> and <code>tmux</code> protocols should be installed. Please see this <a href="https://svenbuerki.github.io/Genomics-Bioinformatics/Tutorials.html">website</a> for more details and documentation.</p>
-</div>
-<div id="code" class="section level2" number="5.2">
-<h2><span class="header-section-number">5.2</span> Code</h2>
+<div id="getting-ready" class="section level2" number="4.3">
+<h2><span class="header-section-number">4.3</span> Getting ready!</h2>
 <p>We start by <em>i</em>) remotely accessing the Linux computer using <code>ssh</code> protocol (you need your user ID and IP address), <em>ii</em>) launching a <code>tmux</code> session (safe environment that can be accessed from different locations) and <em>iii</em>) navigating to the project folder (here <code>Vanilla_SRA</code>) as follows:</p>
 <pre class="bash"><code># 1. Remotely connect to computer using ssh (adjust with your credentials/IP)
 ssh userID@IP
@@ -475,23 +490,23 @@ cd /media/SeaGate/Vanilla_SRA/Raw_Data/</code></pre>
 <p>More information on the project structure can be found <a href="#prjstr">here</a>.</p>
 </div>
 </div>
-<div id="dwndata" class="section level1" number="6">
-<h1><span class="header-section-number">6</span> Downloading SRA files</h1>
-<div id="data-requirements" class="section level2" number="6.1">
-<h2><span class="header-section-number">6.1</span> Data requirements</h2>
+<div id="dwndata" class="section level1" number="5">
+<h1><span class="header-section-number">5</span> Downloading SRA files</h1>
+<div id="data-requirements" class="section level2" number="5.1">
+<h2><span class="header-section-number">5.1</span> Data requirements</h2>
 <ul>
 <li><strong>Input:</strong> <code>SRA</code> accession number from NCBI.</li>
 <li><strong>Output:</strong> Split <code>fastq.gz</code> files with R1 and R2 paired-end reads.</li>
 </ul>
 </div>
-<div id="dependencies-1" class="section level2" number="6.2">
-<h2><span class="header-section-number">6.2</span> Dependencies</h2>
+<div id="dependencies" class="section level2" number="5.2">
+<h2><span class="header-section-number">5.2</span> Dependencies</h2>
 <p><code>SRA</code> files are downloaded using <code>parallel-fastq-dump</code>, which is available on <a href="https://github.com/rvalieris/parallel-fastq-dump">GitHub</a>. It can also be installed with <a href="https://anaconda.org/bioconda">Bioconda</a> as follows:</p>
 <pre class="bash"><code># Install program with Bioconda
 conda install parallel-fastq-dump</code></pre>
 </div>
-<div id="code-1" class="section level2" number="6.3">
-<h2><span class="header-section-number">6.3</span> Code</h2>
+<div id="code" class="section level2" number="5.3">
+<h2><span class="header-section-number">5.3</span> Code</h2>
 <p>Here, we need to <em>i</em>) create the <code>$SRA</code> variable with <code>SRA</code> accession number of data to be downloaded, <em>ii</em>) navigate to right folder (where data will be saved; here <code>Raw_Data/</code>) and <em>iii</em>) download <code>SRA</code> files (R1 and R2) using <code>parallel-fastq-dump</code>. This program allows parallelizing the downloading process and greatly reduces the downloading time. In this case, the files that we are downloading are compressed (<code>gz</code>) and they are in <code>fastq</code> format generated by Illumina instruments. The commands are available below:</p>
 <pre class="bash"><code># 1. Create variable with sample SRA accession (as provided on NCBI)
 SRA=SRR12628846 &amp;&amp; # V. planifolia &#39;Hawaii&#39;
@@ -503,22 +518,22 @@ cd Raw_Data/ &amp;&amp;
 parallel-fastq-dump -O . --sra-id $SRA --threads 26 --split-files --gzip</code></pre>
 </div>
 </div>
-<div id="trim" class="section level1" number="7">
-<h1><span class="header-section-number">7</span> Conducting reads trimming</h1>
+<div id="trim" class="section level1" number="6">
+<h1><span class="header-section-number">6</span> Conducting reads trimming</h1>
 <p>Here, we use <code>Trimmomatic</code> <span class="citation">(<a href="#ref-Bolger2014" role="doc-biblioref">Bolger et al., 2014</a>)</span> to clean/trim the Illumina paired-end reads from previous step.</p>
-<div id="data-requirements-1" class="section level2" number="7.1">
-<h2><span class="header-section-number">7.1</span> Data requirements</h2>
+<div id="data-requirements-1" class="section level2" number="6.1">
+<h2><span class="header-section-number">6.1</span> Data requirements</h2>
 <ul>
 <li><strong>Input:</strong> For each <code>SRA</code>, R1 and R2 <code>fastq.gz</code> files.</li>
 <li><strong>Output:</strong> Four files, but only <code>$SRA_R1_trimmed.fastq.gz</code> and <code>$SRA_R2_trimmed.fastq.gz</code> containing cleaned paired reads from <code>Trimmomatic</code> will be used for downstream analyses.</li>
 </ul>
 </div>
-<div id="dependencies-2" class="section level2" number="7.2">
-<h2><span class="header-section-number">7.2</span> Dependencies</h2>
+<div id="dependencies-1" class="section level2" number="6.2">
+<h2><span class="header-section-number">6.2</span> Dependencies</h2>
 <p>You can obtain and install <code>Trimmomatic</code> directly from <a href="https://github.com/usadellab/Trimmomatic">GitHub</a>.</p>
 </div>
-<div id="code-2" class="section level2" number="7.3">
-<h2><span class="header-section-number">7.3</span> Code</h2>
+<div id="code-1" class="section level2" number="6.3">
+<h2><span class="header-section-number">6.3</span> Code</h2>
 <p>To clean/trim the Illumina reads do as follows:</p>
 <pre class="bash"><code># 1. Navigate to right location
 cd ../Trimmomatic &amp;&amp;
@@ -527,22 +542,22 @@ cd ../Trimmomatic &amp;&amp;
 TrimmomaticPE -threads 30 /media/SeaGate/Vanilla_SRA/Raw_Data/&quot;$SRA&quot;_1.fastq.gz /media/SeaGate/Vanilla_SRA/Raw_Data/&quot;$SRA&quot;_2.fastq.gz &quot;$SRA&quot;_1_trimmed.fastq.gz &quot;$SRA&quot;_1_UNPAIRED.fastq.gz &quot;$SRA&quot;_2_trimmed.fastq.gz &quot;$SRA&quot;_2_UNPAIRED.fastq.gz LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:100</code></pre>
 </div>
 </div>
-<div id="GS" class="section level1" number="8">
-<h1><span class="header-section-number">8</span> Genome size and heterozygosity</h1>
+<div id="GS" class="section level1" number="7">
+<h1><span class="header-section-number">7</span> Genome size and heterozygosity</h1>
 <p>In this section, we are providing information to estimate genome sizes and levels of heterozygosity for the <em>Vanilla planifolia</em> samples inferred using the approach implemented in <code>GenomScope 2.0</code> <span class="citation">(<a href="#ref-RanalloBenavidez2020" role="doc-biblioref">Ranallo-Benavidez et al., 2020</a>)</span>, which relies on k-mers (k=21) inferred by <code>JellyFish</code> <span class="citation">(<a href="#ref-Jellyfish2011" role="doc-biblioref">Marçais and Kingsford, 2011</a>)</span>.</p>
-<div id="data-requirements-2" class="section level2" number="8.1">
-<h2><span class="header-section-number">8.1</span> Data requirements</h2>
+<div id="data-requirements-2" class="section level2" number="7.1">
+<h2><span class="header-section-number">7.1</span> Data requirements</h2>
 <ul>
 <li><strong>Input:</strong> <code>$SRA_R1_trimmed.fastq.gz</code> and <code>$SRA_R2_trimmed.fastq.gz</code> containing cleaned paired reads from <code>Trimmomatic</code>.</li>
 <li><strong>Output:</strong> <code>21mer_trimmed_"$SRA"_pe12.histo</code> files from <code>JellyFish</code> used as input for the <code>GenomeScope 2</code> analysis. The latter analysis will generate plots stored in <code>png</code> format. You will also need to store <code>kcov</code> provided by <code>GenomeScope 2</code> for the <code>smudgeplot</code> analyses.</li>
 </ul>
 </div>
-<div id="dependencies-3" class="section level2" number="8.2">
-<h2><span class="header-section-number">8.2</span> Dependencies</h2>
+<div id="dependencies-2" class="section level2" number="7.2">
+<h2><span class="header-section-number">7.2</span> Dependencies</h2>
 <p><code>GenomScope 2.0</code> is available on <a href="https://github.com/tbenavi1/genomescope2.0">GitHub</a> and <code>JellyFish</code> is available <a href="https://genome.umd.edu/jellyfish.html#Release">here</a>.</p>
 </div>
-<div id="code-3" class="section level2" number="8.3">
-<h2><span class="header-section-number">8.3</span> Code</h2>
+<div id="code-2" class="section level2" number="7.3">
+<h2><span class="header-section-number">7.3</span> Code</h2>
 <p>The commands to conduct these analyses are as follows:</p>
 <pre class="bash"><code># 1. Navigate to right location
 cd ../JellyFish &amp;&amp;
@@ -558,23 +573,66 @@ genomescope.R -i 21mer_trimmed_&quot;$SRA&quot;_pe12.histo -o output -k 21
 http://qb.cshl.edu/genomescope/genomescope2.0/</code></pre>
 <p><strong>Note:</strong> You need to record <code>kcov</code> from the <code>GenomeScope</code> output to set the <code>L</code> parameter in the <code>smudgeplot</code> analysis (see below).</p>
 </div>
+<div id="processing-output-images" class="section level2" number="7.4">
+<h2><span class="header-section-number">7.4</span> Processing output images</h2>
+<p>The output of the GenomeScope analysis are <code>png</code> files and these do not contain headers with the sample names.</p>
+<pre class="r"><code>###~~~
+#Process png output from GenomeScope
+###~~~
+
+#1. Load package
+library(magick)
+
+#2. List of 
+imgList &lt;- list.files(&quot;Images/GenomescopeV2_images/&quot;, pattern = &quot;.png&quot;, full.names = T)
+
+#3. Create vector with sample IDs
+SamplesID &lt;- gsub(&quot;.png&quot;, &quot;&quot;, gsub(&quot;Van&quot;, &quot;MEX&quot;, sapply(strsplit(imgList, split = &quot;//&quot;), &quot;[[&quot;, 2)))
+#4. Create path object
+path &lt;- strsplit(imgList[1], &quot;//&quot;)[[1]][1]
+
+#5. Annotate images and save them in GenomeScope_annotated folder
+for(i in 1:length(imgList)){
+  #Open png
+  imraw &lt;- magick::image_read(imgList[i])
+  
+  #Annotate png with sample ID
+  imprep &lt;- magick::image_annotate(imraw, SamplesID[i], size = 50, color = &quot;black&quot;, location = &quot;+140+50&quot;)
+  
+  #Save images in GenomeScope_annotated
+  #Check if folder exists
+  # if not then creates it
+  output_dir &lt;- file.path(paste0(path, &quot;/GenomeScope_annotated&quot;))
+    
+  if(dir.exists(output_dir)){
+    #print(paste0(&quot;Dir&quot;, output_dir, &quot; already exists!&quot;))
+  }else{
+    print(paste0(&quot;Created &quot;, output_dir))
+    dir.create(output_dir)  
+  }
+  
+  #Save annotated image  
+  magick::image_write(imprep, path = paste0(output_dir, &quot;/Annotated_&quot;, SamplesID[i], &quot;.png&quot;))
+  
+}</code></pre>
 </div>
-<div id="cyt" class="section level1" number="9">
-<h1><span class="header-section-number">9</span> Ploidy level and genome complexity</h1>
+</div>
+<div id="cyt" class="section level1" number="8">
+<h1><span class="header-section-number">8</span> Ploidy level and genome complexity</h1>
 <p>Ploidy levels of <em>Vanilla planifolia</em> samples and their genomic complexity (focusing on heterozygous k-mers) were inferred by applying the approach implemented in <code>smudgeplot</code> <span class="citation">(<a href="#ref-RanalloBenavidez2020" role="doc-biblioref">Ranallo-Benavidez et al., 2020</a>)</span>, which relies on k-mers (k=21) inferred by <code>KMC</code> <span class="citation">(<a href="#ref-KMC2017" role="doc-biblioref">Kokot et al., 2017</a>)</span>.</p>
-<div id="data-requirements-3" class="section level2" number="9.1">
-<h2><span class="header-section-number">9.1</span> Data requirements</h2>
+<div id="data-requirements-3" class="section level2" number="8.1">
+<h2><span class="header-section-number">8.1</span> Data requirements</h2>
 <ul>
 <li><strong>Input:</strong> <code>$SRA_R1_trimmed.fastq.gz</code> and <code>$SRA_R2_trimmed.fastq.gz</code> containing cleaned paired reads from <code>Trimmomatic</code> and <code>kcov</code> values from the <code>GenomeScope</code> analyses.</li>
 <li><strong>Output:</strong> <code>kmcdb_"$SRA"_L"$L"_U"$U"_coverages.tsv</code> files from <code>KMC</code>. These files will be used as input for the <code>smudgeplot</code> analyses, which will output plots in <code>png</code> format.</li>
 </ul>
 </div>
-<div id="dependencies-4" class="section level2" number="9.2">
-<h2><span class="header-section-number">9.2</span> Dependencies</h2>
+<div id="dependencies-3" class="section level2" number="8.2">
+<h2><span class="header-section-number">8.2</span> Dependencies</h2>
 <p><code>KMC</code> is available on <a href="https://github.com/refresh-bio/KMC">GitHub</a> and <code>smudgeplot</code> is also available on <a href="https://github.com/KamilSJaron/smudgeplot">GitHub</a>.</p>
 </div>
-<div id="code-4" class="section level2" number="9.3">
-<h2><span class="header-section-number">9.3</span> Code</h2>
+<div id="code-3" class="section level2" number="8.3">
+<h2><span class="header-section-number">8.3</span> Code</h2>
 <p>The commands to conduct these analyses are as follows:</p>
 <pre class="bash"><code># 1.Navigate to right folder
 cd ../Smudgeplot/ &amp;&amp;
@@ -605,25 +663,25 @@ smudge_pairs kmcdb_&quot;$SRA&quot;_L&quot;$L&quot;_U&quot;$U&quot; kmcdb_&quot;
 smudgeplot.py plot kmcdb_&quot;$SRA&quot;_L&quot;$L&quot;_U&quot;$U&quot;_coverages.tsv -o &quot;$SRA&quot;_L&quot;$L&quot;_U&quot;$U&quot; -k 21</code></pre>
 </div>
 </div>
-<div id="conseq" class="section level1" number="10">
-<h1><span class="header-section-number">10</span> Reconstructing genome sequences</h1>
+<div id="conseq" class="section level1" number="9">
+<h1><span class="header-section-number">9</span> Reconstructing genome sequences</h1>
 <p>Genome reconstructions (at chromosome scale) were carried out by mapping the cleaned trimmed reads to the <em>Vanilla planifolia</em> Daphna reference genome (<a href="https://www.ncbi.nlm.nih.gov/data-hub/genome/GCA_016413895.1/">GCA_016413895.1</a> in <code>fasta</code> format. Read mapping was conducted with <code>bowtie2</code> <span class="citation">(<a href="#ref-Langmead2012" role="doc-biblioref">Langmead and Salzberg, 2012</a>)</span> and the consensus genome sequences (in <code>fasta</code> format) were reconstructed by using <code>samtools</code> and <code>bcftools</code> <span class="citation">(<a href="#ref-Danecek2021" role="doc-biblioref">Danecek et al., 2021</a>)</span>.</p>
-<div id="data-requirements-4" class="section level2" number="10.1">
-<h2><span class="header-section-number">10.1</span> Data requirements</h2>
+<div id="data-requirements-4" class="section level2" number="9.1">
+<h2><span class="header-section-number">9.1</span> Data requirements</h2>
 <ul>
 <li><strong>Input:</strong> <code>GCA_016413895.1_Elo_Vpla-A_principal_1.0_genomic_chrmosomes.fna</code> reference genome and <code>$SRA_R1_trimmed.fastq.gz</code> and <code>$SRA_R2_trimmed.fastq.gz</code> files.</li>
 <li><strong>Output:</strong> <code>"$SRA"_consensus.fa</code> containing newly assembled genome sequences for each sample.</li>
 </ul>
 </div>
-<div id="dependencies-5" class="section level2" number="10.2">
-<h2><span class="header-section-number">10.2</span> Dependencies</h2>
+<div id="dependencies-4" class="section level2" number="9.2">
+<h2><span class="header-section-number">9.2</span> Dependencies</h2>
 <p><code>bowtie2</code> is available on <a href="https://github.com/BenLangmead/bowtie2">GitHub</a>, but it can also be installed with <a href="https://anaconda.org/">Bioconda</a> as follows:</p>
 <pre class="bash"><code>#Install bowtie2 with Bioconda
 conda install bowtie2</code></pre>
 <p><code>samtools</code> and <code>bcftools</code> are available on <a href="https://github.com/samtools/">GitHub</a>.</p>
 </div>
-<div id="code-5" class="section level2" number="10.3">
-<h2><span class="header-section-number">10.3</span> Code</h2>
+<div id="code-4" class="section level2" number="9.3">
+<h2><span class="header-section-number">9.3</span> Code</h2>
 <p>The code to execute these analyses is presented below:</p>
 <pre class="bash"><code># 1. Declare variable with sample name (if not already done)
 SRA=Van65 &amp;&amp; # Please adjust to your sample
@@ -683,8 +741,8 @@ write.table(conFasta, paste0(SRA, &quot;_consensus.fa&quot;), row.names = F, col
 quit(save=&quot;no&quot;)</code></pre>
 </div>
 </div>
-<div id="comgen" class="section level1" number="11">
-<h1><span class="header-section-number">11</span> Comparative chromosome level analyses</h1>
+<div id="comgen" class="section level1" number="10">
+<h1><span class="header-section-number">10</span> Comparative chromosome level analyses</h1>
 <p>We applied the same approach than <span class="citation"><a href="#ref-Shirasawa2022" role="doc-biblioref">Shirasawa et al.</a> (<a href="#ref-Shirasawa2022" role="doc-biblioref">2022</a>)</span> and compared chromosome-level genome sequences of <em>Vanilla planifolia</em> samples with <code>Minimap2</code> <span class="citation">(<a href="#ref-Li2018" role="doc-biblioref">Li, 2018</a>)</span>, and assessed genomic similarities by producing:</p>
 <ol style="list-style-type: decimal">
 <li><a href="#dotplot"><strong>Dot plots</strong></a> with the R package <a href="https://github.com/tpoorten/dotPlotly"><code>pafCoordsDotPlotly</code></a>. These analyses allowed further investigating putative chromosomal rearrangements and genomic similarities between the reference genome and each sample.</li>
@@ -693,21 +751,21 @@ quit(save=&quot;no&quot;)</code></pre>
 </ol>
 <p>All the <strong>comparative analyses rely on the output of the <code>Minimap2</code> analyses</strong>, which are in <a href="https://cran.r-project.org/web/packages/pafr/vignettes/Introduction_to_pafr.html#:~:text=PAF%20is%20a%20plain%20text,least%20the%20following%2012%20columns.&amp;text=In%20addition%2C%20each%20row%20can,the%20SAM%20specification%20(pdf)"><code>paf</code></a> format.</p>
 <p>Please find below information on the data, dependencies and code for each analysis.</p>
-<div id="genome-alignments-with-minimap2" class="section level2" number="11.1">
-<h2><span class="header-section-number">11.1</span> Genome alignments with <code>MiniMap2</code></h2>
-<div id="data-requirements-5" class="section level3" number="11.1.1">
-<h3><span class="header-section-number">11.1.1</span> Data requirements</h3>
+<div id="genome-alignments-with-minimap2" class="section level2" number="10.1">
+<h2><span class="header-section-number">10.1</span> Genome alignments with <code>MiniMap2</code></h2>
+<div id="data-requirements-5" class="section level3" number="10.1.1">
+<h3><span class="header-section-number">10.1.1</span> Data requirements</h3>
 <ul>
 <li><strong>Input:</strong> <code>GCA_016413895.1_Elo_Vpla-A_principal_1.0_genomic_chrmosomes.fna</code> reference genome and <code>"$SRA"_consensus.fa</code> consensus assembly for each sample.</li>
 <li><strong>Output:</strong> <code>aln_ref_asm10_"$SRA".paf</code> file with alignment statistics/data based on <code>MiniMap2</code> analysis.</li>
 </ul>
 </div>
-<div id="dependencies-6" class="section level3" number="11.1.2">
-<h3><span class="header-section-number">11.1.2</span> Dependencies</h3>
+<div id="dependencies-5" class="section level3" number="10.1.2">
+<h3><span class="header-section-number">10.1.2</span> Dependencies</h3>
 <p>The protocol to install <code>minimap2</code> is described <a href="https://github.com/lh3/minimap2">here</a>.</p>
 </div>
-<div id="code-6" class="section level3" number="11.1.3">
-<h3><span class="header-section-number">11.1.3</span> Code</h3>
+<div id="code-5" class="section level3" number="10.1.3">
+<h3><span class="header-section-number">10.1.3</span> Code</h3>
 <pre class="bash"><code>#Note: This code produces an output in paf format. 
 
 # 1. Declare variable with sample name (if not already done)
@@ -720,21 +778,21 @@ cd ../Minimap2 &amp;&amp;
 minimap2 -t26 -cx asm10 -k 21 ../Reference_genome/GCA_016413895.1_Elo_Vpla-A_principal_1.0_genomic_chrmosomes.fna ../Bowtie/&quot;$SRA&quot;_consensus.fa &gt; aln_ref_asm10_&quot;$SRA&quot;.paf #  asm5/asm10/asm20 - asm-to-ref mapping, for ~0.1/1/5% sequence divergence</code></pre>
 </div>
 </div>
-<div id="dotplot" class="section level2" number="11.2">
-<h2><span class="header-section-number">11.2</span> Dot plots</h2>
-<div id="data-requirements-6" class="section level3" number="11.2.1">
-<h3><span class="header-section-number">11.2.1</span> Data requirements</h3>
+<div id="dotplot" class="section level2" number="10.2">
+<h2><span class="header-section-number">10.2</span> Dot plots</h2>
+<div id="data-requirements-6" class="section level3" number="10.2.1">
+<h3><span class="header-section-number">10.2.1</span> Data requirements</h3>
 <ul>
 <li><strong>Input:</strong> <code>aln_ref_asm10_"$SRA".paf</code> file with alignment statistics/data based on <code>MiniMap2</code> analysis.</li>
 <li><strong>Output:</strong> Dot plots in <code>png</code> and <code>html</code> formats.</li>
 </ul>
 </div>
-<div id="dependencies-7" class="section level3" number="11.2.2">
-<h3><span class="header-section-number">11.2.2</span> Dependencies</h3>
+<div id="dependencies-6" class="section level3" number="10.2.2">
+<h3><span class="header-section-number">10.2.2</span> Dependencies</h3>
 <p>Visit this <a href="https://github.com/tpoorten/dotPlotly">webpage</a> to install the dependencies for the <code>pafCoordsDotPlotly.R</code> script.</p>
 </div>
-<div id="code-7" class="section level3" number="11.2.3">
-<h3><span class="header-section-number">11.2.3</span> Code</h3>
+<div id="code-6" class="section level3" number="10.2.3">
+<h3><span class="header-section-number">10.2.3</span> Code</h3>
 <pre class="r"><code># Note: This code outputs png and html documents
 
 # 1. Navigate to right folder
@@ -745,25 +803,25 @@ cd ../DotPlot &amp;&amp;
 Rscript pafCoordsDotPlotly.R -i /media/SeaGate/Vanilla_SRA/Minimap2/aln_ref_asm10_Van65.paf -o dotPlot_aln_ref_asm10_Van65 -s -t -m 10000 -q 50000 -k 14 -l # Provide name (change to VanXX)</code></pre>
 </div>
 </div>
-<div id="covmap" class="section level2" number="11.3">
-<h2><span class="header-section-number">11.3</span> Genome coverage maps</h2>
-<div id="data-requirements-7" class="section level3" number="11.3.1">
-<h3><span class="header-section-number">11.3.1</span> Data requirements</h3>
+<div id="covmap" class="section level2" number="10.3">
+<h2><span class="header-section-number">10.3</span> Genome coverage maps</h2>
+<div id="data-requirements-7" class="section level3" number="10.3.1">
+<h3><span class="header-section-number">10.3.1</span> Data requirements</h3>
 <ul>
 <li><strong>Input:</strong> <code>aln_ref_asm10_"$SRA".paf</code> file with alignment statistics/data based on <code>MiniMap2</code> analysis.</li>
 <li><strong>Output:</strong> Coverage maps in <code>pdf</code> format.</li>
 </ul>
 </div>
-<div id="dependencies-8" class="section level3" number="11.3.2">
-<h3><span class="header-section-number">11.3.2</span> Dependencies</h3>
+<div id="dependencies-7" class="section level3" number="10.3.2">
+<h3><span class="header-section-number">10.3.2</span> Dependencies</h3>
 <p>To install the <code>pafr</code> R package directly from the GitHub repository execute this R code:</p>
 <pre class="r"><code>#Install pafr with devtools
 # If you don&#39;t have devtools do:
 # install.packages(devtools)
 devtools::install_github(&quot;dwinter/pafr&quot;)</code></pre>
 </div>
-<div id="code-8" class="section level3" number="11.3.3">
-<h3><span class="header-section-number">11.3.3</span> Code</h3>
+<div id="code-7" class="section level3" number="10.3.3">
+<h3><span class="header-section-number">10.3.3</span> Code</h3>
 <pre class="r"><code># 1. Navigate to right folder
 cd ../Pafr &amp;&amp;
 
@@ -792,25 +850,25 @@ dev.off()
 quit(save=&quot;no&quot;)</code></pre>
 </div>
 </div>
-<div id="heatmap" class="section level2" number="11.4">
-<h2><span class="header-section-number">11.4</span> Heatmap of chromosomal similarities</h2>
+<div id="heatmap" class="section level2" number="10.4">
+<h2><span class="header-section-number">10.4</span> Heatmap of chromosomal similarities</h2>
 <p>Since the previous analyses did not unveil any chromosomal rearrangements, we have produced a heatmap to compare percentage identities between chromosomes (against the reference). To do that, we needed to start by inferring the percentage identities between each target chromosome and the reference genome as follows: <code>100*(nmatch/alen)</code> (see <a href="https://cran.r-project.org/web/packages/pafr/vignettes/Introduction_to_pafr.html#:~:text=PAF%20is%20a%20plain%20text,least%20the%20following%2012%20columns.&amp;text=In%20addition%2C%20each%20row%20can,the%20SAM%20specification%20(pdf)">here</a> for more details).</p>
-<div id="data-requirements-8" class="section level3" number="11.4.1">
-<h3><span class="header-section-number">11.4.1</span> Data requirements</h3>
+<div id="data-requirements-8" class="section level3" number="10.4.1">
+<h3><span class="header-section-number">10.4.1</span> Data requirements</h3>
 <ul>
 <li><strong>Input:</strong> List of all the <code>aln_ref_asm10_"$SRA".paf</code> files with alignment statistics/data based on <code>MiniMap2</code> analyses.</li>
 <li><strong>Output:</strong> A <code>csv</code> (<code>PercIdMat.csv</code>) with percentage similarities and a heatmap in <code>pdf</code> format.</li>
 </ul>
 </div>
-<div id="dependencies-9" class="section level3" number="11.4.2">
-<h3><span class="header-section-number">11.4.2</span> Dependencies</h3>
+<div id="dependencies-8" class="section level3" number="10.4.2">
+<h3><span class="header-section-number">10.4.2</span> Dependencies</h3>
 <p>To install the R <code>gplots</code> package execute this code:</p>
 <pre class="r"><code>#Install gplots from CRAN
 # Documentation: https://github.com/talgalili/gplots
 install.packages(&#39;gplots&#39;)</code></pre>
 </div>
-<div id="code-9" class="section level3" number="11.4.3">
-<h3><span class="header-section-number">11.4.3</span> Code</h3>
+<div id="code-8" class="section level3" number="10.4.3">
+<h3><span class="header-section-number">10.4.3</span> Code</h3>
 <p>The custom <code>R</code> code below (relying on base <code>R</code> functions) builds a matrix storing percentage identities for all samples, which will then be used as input to infer the heatmap.</p>
 <pre class="r"><code># 1. Navigate to right folder
 cd ../Minimap2 &amp;&amp;
@@ -865,7 +923,7 @@ write.csv(PercIdMat, file = &quot;/media/SeaGate/Vanilla_SRA/Heatmap/PercIdMat.c
 library(&quot;gplots&quot;)
 
 # 2. Edit colnames and rownames for plot (from the PercIdMat object from previous code)
-colnames(PercIdMat) &lt;- gsub(&quot;aln_ref_asm10_&quot;, &quot;&quot;, colnames(PercIdMat))
+colnames(PercIdMat) &lt;- gsub(&quot;Van&quot;, &quot;MEX&quot;, gsub(&quot;aln_ref_asm10_&quot;, &quot;&quot;, colnames(PercIdMat)))
 colnames(PercIdMat) &lt;- gsub(&quot;.paf&quot;, &quot;&quot;, colnames(PercIdMat))
 #rownames(PercIdMat) &lt;- gsub(&quot;[.]1&quot;, &quot;&quot;, rownames(PercIdMat))
 
@@ -877,8 +935,8 @@ dev.off()</code></pre>
 </div>
 </div>
 </div>
-<div id="references" class="section level1" number="12">
-<h1><span class="header-section-number">12</span> References</h1>
+<div id="references" class="section level1" number="11">
+<h1><span class="header-section-number">11</span> References</h1>
 <div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-Bolger2014" class="csl-entry">
 <span class="smallcaps">Bolger, A.M.</span>, <span class="smallcaps">M. Lohse</span>, and <span class="smallcaps">B. Usadel</span>. 2014. Trimmomatic: A flexible trimmer for illumina sequence data. <em>Bioinformatics</em> 30: 2114–2120. Available at: <a href="http://dx.doi.org/10.1093/bioinformatics/btu170">http://dx.doi.org/10.1093/bioinformatics/btu170</a>.
@@ -909,8 +967,8 @@ dev.off()</code></pre>
 </div>
 </div>
 </div>
-<div id="appendix-1" class="section level1 appendix" number="13">
-<h1><span class="header-section-number">13</span> Appendix 1</h1>
+<div id="appendix-1" class="section level1 appendix" number="12">
+<h1><span class="header-section-number">12</span> Appendix 1</h1>
 <p>Citations of all R packages used to generate this report.</p>
 <p>[1] J. Allaire, Y. Xie, J. McPherson, et al. <em>rmarkdown: Dynamic
 Documents for R</em>. R package version 2.14. 2022. &lt;URL:
@@ -918,50 +976,53 @@ Documents for R</em>. R package version 2.14. 2022. &lt;URL:
 <p>[2] C. Boettiger. <em>knitcitations: Citations for Knitr Markdown Files</em>.
 R package version 1.0.12. 2021. &lt;URL:
 <a href="https://github.com/cboettig/knitcitations" class="uri">https://github.com/cboettig/knitcitations</a>&gt;.</p>
-<p>[3] M. C. Koohafkan. <em>kfigr: Integrated Code Chunk Anchoring and
+<p>[3] J. Cheng, B. Karambelkar, and Y. Xie. <em>leaflet: Create Interactive
+Web Maps with the JavaScript Leaflet Library</em>. R package version 2.1.1.
+2022. &lt;URL: <a href="https://rstudio.github.io/leaflet/" class="uri">https://rstudio.github.io/leaflet/</a>&gt;.</p>
+<p>[4] M. C. Koohafkan. <em>kfigr: Integrated Code Chunk Anchoring and
 Referencing for R Markdown Documents</em>. R package version 1.2.1. 2021.
 &lt;URL: <a href="https://github.com/mkoohafkan/kfigr" class="uri">https://github.com/mkoohafkan/kfigr</a>&gt;.</p>
-<p>[4] R Core Team. <em>R: A Language and Environment for Statistical
+<p>[5] R Core Team. <em>R: A Language and Environment for Statistical
 Computing</em>. R Foundation for Statistical Computing. Vienna, Austria,
 2019. &lt;URL: <a href="https://www.R-project.org/" class="uri">https://www.R-project.org/</a>&gt;.</p>
-<p>[5] H. Wickham, J. Bryan, and M. Barrett. <em>usethis: Automate Package
+<p>[6] H. Wickham, J. Bryan, and M. Barrett. <em>usethis: Automate Package
 and Project Setup</em>. R package version 2.1.5. 2021. &lt;URL:
 <a href="https://CRAN.R-project.org/package=usethis" class="uri">https://CRAN.R-project.org/package=usethis</a>&gt;.</p>
-<p>[6] H. Wickham, R. François, L. Henry, et al. <em>dplyr: A Grammar of Data
+<p>[7] H. Wickham, R. François, L. Henry, et al. <em>dplyr: A Grammar of Data
 Manipulation</em>. R package version 1.0.9. 2022. &lt;URL:
 <a href="https://CRAN.R-project.org/package=dplyr" class="uri">https://CRAN.R-project.org/package=dplyr</a>&gt;.</p>
-<p>[7] H. Wickham, J. Hester, W. Chang, et al. <em>devtools: Tools to Make
+<p>[8] H. Wickham, J. Hester, W. Chang, et al. <em>devtools: Tools to Make
 Developing R Packages Easier</em>. R package version 2.4.3. 2021. &lt;URL:
 <a href="https://CRAN.R-project.org/package=devtools" class="uri">https://CRAN.R-project.org/package=devtools</a>&gt;.</p>
-<p>[8] Y. Xie. <em>bookdown: Authoring Books and Technical Documents with R
+<p>[9] Y. Xie. <em>bookdown: Authoring Books and Technical Documents with R
 Markdown</em>. ISBN 978-1138700109. Boca Raton, Florida: Chapman and
 Hall/CRC, 2016. &lt;URL: <a href="https://bookdown.org/yihui/bookdown" class="uri">https://bookdown.org/yihui/bookdown</a>&gt;.</p>
-<p>[9] Y. Xie. <em>bookdown: Authoring Books and Technical Documents with R
+<p>[10] Y. Xie. <em>bookdown: Authoring Books and Technical Documents with R
 Markdown</em>. R package version 0.26. 2022. &lt;URL:
 <a href="https://CRAN.R-project.org/package=bookdown" class="uri">https://CRAN.R-project.org/package=bookdown</a>&gt;.</p>
-<p>[10] Y. Xie. <em>Dynamic Documents with R and knitr</em>. 2nd. ISBN
+<p>[11] Y. Xie. <em>Dynamic Documents with R and knitr</em>. 2nd. ISBN
 978-1498716963. Boca Raton, Florida: Chapman and Hall/CRC, 2015. &lt;URL:
 <a href="https://yihui.org/knitr/" class="uri">https://yihui.org/knitr/</a>&gt;.</p>
-<p>[11] Y. Xie. <em>formatR: Format R Code Automatically</em>. R package version
+<p>[12] Y. Xie. <em>formatR: Format R Code Automatically</em>. R package version
 1.12. 2022. &lt;URL: <a href="https://github.com/yihui/formatR" class="uri">https://github.com/yihui/formatR</a>&gt;.</p>
-<p>[12] Y. Xie. “knitr: A Comprehensive Tool for Reproducible Research in
+<p>[13] Y. Xie. “knitr: A Comprehensive Tool for Reproducible Research in
 R.” In: <em>Implementing Reproducible Computational Research</em>. Ed. by V.
 Stodden, F. Leisch and R. D. Peng. ISBN 978-1466561595. Chapman and
 Hall/CRC, 2014. &lt;URL:
 <a href="http://www.crcpress.com/product/isbn/9781466561595" class="uri">http://www.crcpress.com/product/isbn/9781466561595</a>&gt;.</p>
-<p>[13] Y. Xie. <em>knitr: A General-Purpose Package for Dynamic Report
+<p>[14] Y. Xie. <em>knitr: A General-Purpose Package for Dynamic Report
 Generation in R</em>. R package version 1.39. 2022. &lt;URL:
 <a href="https://yihui.org/knitr/" class="uri">https://yihui.org/knitr/</a>&gt;.</p>
-<p>[14] Y. Xie and J. Allaire. <em>tufte: Tufte’s Styles for R Markdown
+<p>[15] Y. Xie and J. Allaire. <em>tufte: Tufte’s Styles for R Markdown
 Documents</em>. R package version 0.12. 2022. &lt;URL:
 <a href="https://github.com/rstudio/tufte" class="uri">https://github.com/rstudio/tufte</a>&gt;.</p>
-<p>[15] Y. Xie, J. Allaire, and G. Grolemund. <em>R Markdown: The Definitive
+<p>[16] Y. Xie, J. Allaire, and G. Grolemund. <em>R Markdown: The Definitive
 Guide</em>. ISBN 9781138359338. Boca Raton, Florida: Chapman and Hall/CRC,
 2018. &lt;URL: <a href="https://bookdown.org/yihui/rmarkdown" class="uri">https://bookdown.org/yihui/rmarkdown</a>&gt;.</p>
-<p>[16] Y. Xie, C. Dervieux, and E. Riederer. <em>R Markdown Cookbook</em>. ISBN
+<p>[17] Y. Xie, C. Dervieux, and E. Riederer. <em>R Markdown Cookbook</em>. ISBN
 9780367563837. Boca Raton, Florida: Chapman and Hall/CRC, 2020. &lt;URL:
 <a href="https://bookdown.org/yihui/rmarkdown-cookbook" class="uri">https://bookdown.org/yihui/rmarkdown-cookbook</a>&gt;.</p>
-<p>[17] H. Zhu. <em>kableExtra: Construct Complex Table with kable and Pipe
+<p>[18] H. Zhu. <em>kableExtra: Construct Complex Table with kable and Pipe
 Syntax</em>. R package version 1.3.4. 2021. &lt;URL:
 <a href="https://CRAN.R-project.org/package=kableExtra" class="uri">https://CRAN.R-project.org/package=kableExtra</a>&gt;.</p>
 </div>

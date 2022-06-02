@@ -1,0 +1,4 @@
+peak	kmers [#]	kmers [proportion]	summit B / (A + B)	summit A + B
+AB	53684468	0.88	0.48	79.51
+AAB	3937738	0.06	0.32	114.52
+AABB	3632861	0.06	0.49	161.19

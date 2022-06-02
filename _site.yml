@@ -9,8 +9,6 @@ navbar:
       href: reproducible_report.html
     - text: "Heterozygosity"
       href: heterozygosity_review.html
-    - text: "Map"
-      href: location_pop.html
     - text: "Acknowledgements"
       href: funding.html
     - text: "Citation"
