@@ -538,7 +538,7 @@ knitr::kable(as.data.frame(paf), caption = "Example of an output of a Minimap2 a
 
 ```
 
-The `paf` file does not contain any headers, but information on the different variables is provided in Table \@ref(tab:pafheaders).
+The `paf` file does not contain any headers, but information on the different variables is provided in Table \@ref(tab:pafheaders). In addition, each row can have a variable number of 'tags', which share a similar format to those used in SAM files (see the [SAM specification format](https://samtools.github.io/hts-specs/SAMtags.pdf)).
 
 ```{r pafheaders, echo = F, eval=TRUE, warning = FALSE, message=FALSE}
 ###~~~
@@ -636,6 +636,14 @@ dev.off()
 quit(save="no")
 ```
 
+### Output
+
+Here is an example of the output of the genome coverage map inferred with `pafr` on `MEX79` (see Figure \@ref(fig:covmap)).
+
+```{r covmap, echo=FALSE, fig.cap="Example of a genome coverage map.", out.width = '100%'}
+knitr::include_graphics("Images/Coverage_plot_ref_Van79_asm10_Minimap2.png")
+```
+
 ## Heatmap of chromosomal similarities {#heatmap}
 
 Since the previous analyses did not unveil any chromosomal rearrangements, we have produced a heatmap to compare percentage identities between chromosomes (against the reference). To do that, we needed to start by inferring the percentage identities between each target chromosome and the reference genome as follows: `100*(nmatch/alen)` (see [here](https://cran.r-project.org/web/packages/pafr/vignettes/Introduction_to_pafr.html#:~:text=PAF%20is%20a%20plain%20text,least%20the%20following%2012%20columns.&text=In%20addition%2C%20each%20row%20can,the%20SAM%20specification%20(pdf)) for more details). 
@@ -726,6 +734,14 @@ pdf("/media/SeaGate/Vanilla_SRA/Heatmap/Heatmap_chrom_Vanilla_2.pdf")
 heatmap.2(as.matrix(PercIdMat), scale = "none", col = bluered(100), 
           trace = "none", density.info = "none", cexRow = .8)
 dev.off()
+```
+
+### Output
+
+Here is the heatmap generated for the *Vanilla planifolia* samples from Mexico comparing those with the reference genome (see Figure \@ref(fig:covmap)).
+
+```{r heatmapplot, echo=FALSE, fig.cap="Heatmap of Vanilla planifolia samples. See text for more details.", out.width = '100%'}
+knitr::include_graphics("Images/Heatmap_chrom_Vanilla_2.png")
 ```
 
 # References
