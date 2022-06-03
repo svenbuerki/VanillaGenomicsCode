@@ -55,7 +55,7 @@ This reproducible report provides evidence on the data, software, packages and c
 
 # Sampling
 
-This study focuses on *Vanilla planifolia* (Orchidaceae) and the physical specimens are deposited at HEM (Universidad de Ciencias y Artes de Chiapas, Mexico) and SRP (Boise State Univeristy, Idaho, USA).
+This study focuses on *Vanilla planifolia* (Orchidaceae) and the physical specimens are deposited at HEM (Universidad de Ciencias y Artes de Chiapas, Mexico) and SRP (Boise State University, Idaho, USA) (see Table \@ref(tab:tabsampling)).
 
 ## Distribution data
 
@@ -88,7 +88,7 @@ m
 
 ## Genomic data
 
-This project relies on paired-end Illumina short-read data (2x150bp) in `fastq.gz` format generated on an Illumina HiSeq 2500 instrument by Azenta (New Jersey, USA). The data produced in this project are deposited on NCBI under BioProject (PRJNA841950) and SRA accessions SRR19374404-SRR19374419. We are also using data from the BioProject [PRJNA633886](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA633886/) published in @Hasing2020. 
+This project relies on paired-end Illumina short-read data (2x150bp) in `fastq.gz` format generated on an Illumina HiSeq 2500 instrument by Azenta (New Jersey, USA). The data produced in this project are deposited on NCBI under BioProject (PRJNA841950) and SRA accessions SRR19374404-SRR19374419 (see Table \@ref(tab:tabsampling)). We are also using data from the BioProject [PRJNA633886](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA633886/) published in @Hasing2020. 
 
 ```{r tabsampling, eval = T, echo=F, warning = FALSE, message=FALSE}
 ###~~~
@@ -115,14 +115,19 @@ colnames(redtsv) <- c("Sample_ID", "BioSample", "SRA")
 #Plot timetable in doc
 ###~~~
 #Plot table
-DT::datatable(redtsv, extensions = 'Buttons', options = list(dom = 'Blfrtip', buttons = c('copy', 'csv', 'excel', 'pdf', 'print')), rownames= FALSE) %>%
-  DT::formatStyle('Sample_ID', fontWeight = 'bold')
+#DT::datatable(redtsv, extensions = 'Buttons', options = list(dom = 'Blfrtip', buttons = c('copy', 'csv', 'excel', 'pdf', #'print')), rownames= FALSE) %>%
+#  DT::formatStyle('Sample_ID', fontWeight = 'bold')
+
+#Plot table
+row.names(redtsv) <- NULL
+knitr::kable(as.data.frame(redtsv), caption = "Table showing the Vanilla planifolia sampling used in this study together with information on the genomic data available on NCBI.") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
 
 ```
 
 # Overview of analytical workflow
 
-This section provides an overview of the analyses conducted in this study aiming at comparing the genome complexity and structure of samples of *Vanilla planifolia* from Mexico and data available on NCBI. Details on the software and associated code for the following analyses are presented in this document: 
+This section provides an overview of the analyses conducted in this study aiming at comparing the genome complexity and structure of samples of *Vanilla planifolia* from Mexico and data available on NCBI (see Table \@ref(tab:tabsampling)). Details on the software and associated code for the following analyses are presented in this document: 
 
 1. [Setting working environment](#setenv).
 2. [Downloading SRA files](#dwndata).
@@ -158,7 +163,7 @@ A summary of the content of each folder is provided here (in alphabetical order)
 
 ## Bioinformatic tools
 
-Analyses presented in this report are requiring a UNIX-based OS (tested on Ubuntu 18.04.6 LTS) and `ssh` and `tmux` protocols should be installed. Please see this [website ](https://svenbuerki.github.io/Genomics-Bioinformatics/Tutorials.html) for more details and documentation. In addition, `R` is frequently used to tidy data and produce figures. All the `R` analyses were performed using R version 4.0.2 (2020-06-22) -- "Taking Off Again" and the software can be downloaded [here](https://www.r-project.org).
+Analyses presented in this report are requiring a UNIX-based OS (tested on Ubuntu 18.04.6 LTS) and `ssh` and `tmux` protocols should be installed. Please see this [website](https://svenbuerki.github.io/Genomics-Bioinformatics/Tutorials.html) for more details and documentation. In addition, `R` is frequently used to tidy data and produce figures. All the `R` analyses were performed using R version 4.0.2 (2020-06-22) -- "Taking Off Again" and the software can be downloaded [here](https://www.r-project.org).
 
 Dependencies associated to each analysis will be presented alongside the code. 
 
@@ -183,7 +188,7 @@ More information on the project structure can be found [here](#prjstr).
 
 ## Data requirements
 
-- **Input:** `SRA` accession number from NCBI.
+- **Input:** `SRA` accession number from NCBI (see Table \@ref(tab:tabsampling)).
 - **Output:** Split `fastq.gz` files with R1 and R2 paired-end reads.
 
 ## Dependencies
@@ -197,7 +202,7 @@ conda install parallel-fastq-dump
 
 ## Code
 
-Here, we need to *i*) create the `$SRA` variable with `SRA` accession number of data to be downloaded, *ii*) navigate to right folder (where data will be saved; here `Raw_Data/`) and *iii*) download `SRA` files (R1 and R2) using `parallel-fastq-dump`. This program allows parallelizing the downloading process and greatly reduces the downloading time. In this case, the files that we are downloading are compressed (`gz`) and they are in `fastq` format generated by Illumina instruments. The commands are available below:
+Here, we need to *i*) create the `$SRA` variable with `SRA` accession number of data to be downloaded (see Table \@ref(tab:tabsampling)), *ii*) navigate to right folder (where data will be saved; here `Raw_Data/`) and *iii*) download `SRA` files (R1 and R2) using `parallel-fastq-dump`. This program allows parallelizing the downloading process and greatly reduces the downloading time. In this case, the files that we are downloading are compressed (`gz`) and they are in `fastq` format generated by Illumina instruments. The commands are available below:
 
 ```{bash echo = T, eval = F}
 # 1. Create variable with sample SRA accession (as provided on NCBI)
