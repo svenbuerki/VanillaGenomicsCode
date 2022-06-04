@@ -70,7 +70,7 @@ loc$img <- paste0("Images/reseq_thumbnail_png/", loc$ID, ".png")
 loc$img[which(loc$ID == "MEX20")] <- ""
 
 #Subset loc
-loc <- loc[-which(loc$ID %in% c("MEX6", "MEX65")),]
+loc <- loc[-which(loc$ID %in% c("MEX6")),]
 
 #Create popup
 contenido <- paste(sep = "<br/>",
@@ -107,7 +107,7 @@ rownames(tsv) <- NULL
 #Red tsv to key data
 redtsv <- tsv[,c(6, 5, 1)]
 #Rm 2 samples for which we have limited genomic data
-rmSample <- c("MEX6", "MEX65")
+rmSample <- c("MEX6")
 redtsv <- redtsv[-match(rmSample, redtsv$sample_name),]
 colnames(redtsv) <- c("Sample_ID", "BioSample", "SRA")
 
@@ -170,6 +170,13 @@ Dependencies associated to each analysis will be presented alongside the code.
 ## Getting ready!
 
 We start by *i*) remotely accessing the Linux computer using `ssh` protocol (you need your user ID and IP address), *ii*) launching a `tmux` session (safe environment that can be accessed from different locations) and *iii*) navigating to the project folder (here `Vanilla_SRA`) as follows:
+
+<!-- SSH CONNEXION -->
+```{bash sshTerminal, echo=FALSE, eval= F, warning=FALSE, include=FALSE}
+#Send command to terminal with Ctrl+Alt+Enter
+ssh svenbuerki@132.178.142.206
+cd /media/SeaGate/Vanilla_SRA/Raw_Data/
+```
 
 ```{bash echo=T, eval = F}
 # 1. Remotely connect to computer using ssh (adjust with your credentials/IP)
@@ -612,6 +619,8 @@ devtools::install_github("dwinter/pafr")
 
 ### Code
 
+The `R` code below infers a genome coverage map for a `.paf` file in `MiniMap2/` and saves it in a `pdf`.
+
 ```{r echo = T, eval=FALSE}
 # 1. Navigate to right folder
 cd ../Pafr &&
@@ -624,11 +633,13 @@ R
 library(pafr, quietly=TRUE)
 
 # 4. Set file name
-SRA <- "Van65" # Adjust name
+SRA <- "Van79" # Adjust name
 
 # 5. Read in the PAF data (output of Minimap2)
 ali <- pafr::read_paf(paste0("../Minimap2/aln_ref_asm10_", SRA, ".paf"))
-
+# Adjust SRA name
+ali$qname <- gsub("Van", "MEX", ali$qname)
+  
 # 6. Declare a vector of colors for coverage plot
 my.cols <- c("orange", "blue", "yellow", "grey", "purple", "green", "brown", "lightblue", "maroon3", "greenyellow",  "cornsilk", "coral4", "chocolate", "burlywood")
 
