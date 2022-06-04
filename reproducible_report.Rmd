@@ -88,7 +88,7 @@ m
 
 ## Genomic data
 
-This project relies on paired-end Illumina short-read data (2x150bp) in `fastq.gz` format generated on an Illumina HiSeq 2500 instrument by Azenta (New Jersey, USA). The data produced in this project are deposited on NCBI under BioProject (PRJNA841950) and SRA accessions SRR19374404-SRR19374419 (see Table \@ref(tab:tabsampling)). We are also using data from the BioProject [PRJNA633886](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA633886/) published in @Hasing2020. 
+This project relies on paired-end Illumina short-read data (2x150bp) in `fastq.gz` format generated on an Illumina HiSeq 2500 instrument by Azenta (New Jersey, USA). The data produced in this project are deposited on NCBI under BioProject (PRJNA841950) and SRA accessions SRR19374404-SRR19374419 (see Table \@ref(tab:tabsampling)). We are also using data from the BioProject [PRJNA633886](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA633886/) published in @Hasing2020. The 1C genome size for the reference genome [GCA_016413915.1](https://www.ncbi.nlm.nih.gov/assembly/GCA_016413895.1) is 736,752,966 bp. This value was used to infer raw genome coverage presented in Table \@ref(tab:tabsampling). We aimed at sequencing the genome at 20x.
 
 ```{r tabsampling, eval = T, echo=F, warning = FALSE, message=FALSE}
 ###~~~
@@ -105,11 +105,17 @@ tsv <- tsv[order(tsv$sample_name),]
 rownames(tsv) <- NULL
 
 #Red tsv to key data
-redtsv <- tsv[,c(6, 5, 1)]
+redtsv <- tsv[,c(6, 5, 1, 21)]
 #Rm 2 samples for which we have limited genomic data
 rmSample <- c("MEX6")
 redtsv <- redtsv[-match(rmSample, redtsv$sample_name),]
-colnames(redtsv) <- c("Sample_ID", "BioSample", "SRA")
+colnames(redtsv) <- c("Sample_ID", "BioSample", "SRA", "# Reads")
+
+#Infer Yield and Coverage
+# Yield = # reads * 300bp
+redtsv$`Yield (Mbases)` <- round(as.numeric(redtsv$`# Reads`*300)/10e6, 3)
+# Coverage = Yield (Mbases)/736752966
+redtsv$`Sequencing coverage (x)` <- round(as.numeric(redtsv$`# Reads`*300)/736752966,2)
 
 ###~~~
 #Plot timetable in doc
@@ -123,6 +129,13 @@ row.names(redtsv) <- NULL
 knitr::kable(as.data.frame(redtsv), caption = "Table showing the Vanilla planifolia sampling used in this study together with information on the genomic data available on NCBI.") %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
 
+```
+
+## How to infer number of reads
+
+To infer rhe number of reads in a `fastq.gz` file using `bash` do the following:
+```{r readsSeq, eval= F, echo = T}
+zcat 12_R2_001.fastq.gz | echo $((`wc -l`/4)) #Adjust file name
 ```
 
 # Overview of analytical workflow
