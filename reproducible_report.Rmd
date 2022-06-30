@@ -773,53 +773,79 @@ Here is the heatmap generated for the *Vanilla planifolia* samples from Mexico c
 knitr::include_graphics("Images/Heatmap_chrom_Vanilla_2.png")
 ```
 
-
 ## SNP analyses
 
-```{bash}
+INTRO
+
+### Data requirements
+
+- **Input:** All `bam` files from the genome reconstruction analyses (see section \@ref(conseq)) as well as the `fasta` reference genome (`GCA_016413895.1_Elo_Vpla-A_principal_1.0_genomic_chrmosomes.fna`).
+- **Output:** A compressed `vcf` file (`calls.vcf.gz`), which will be used as input for fitering SNPs and conducting PCA analysis. 
+
+### Dependencies
+
+The first part of the analyses depend on `bcftools`, which is available on [GitHub](https://github.com/samtools/), whereas the rest of the analyses are conducted in R and requires packages deposited on BioConductor. To install them execute the following code:
+
+```{r eval=FALSE, echo=TRUE}
+# Install packages from BioConductor
+# check is BiocManager package is available, 
+# if not then install it before pursuing code
+if (!require("BiocManager", quietly = TRUE))
+  install.packages("BiocManager")
+
+# Install gdsfmt and SNPRelate
+BiocManager::install(c("gdsfmt", "SNPRelate"))
+```
+
+### Code
+
+Merge all the `bam` files from the genome reconstruction analyses and use `bcftools` to call and filter variants. Further variant filetring will be executed in R (see below).
+
+```{bash eval = F, echo = T}
 # 1. Navigate to right folder
 cd ../Bowtie &&
 
-#Do SNP calling across BAM files
+# 2. Do SNP calling across BAM files (merging them)
 bcftools mpileup  -Ou -f ../Reference_genome/GCA_016413895.1_Elo_Vpla-A_principal_1.0_genomic_chrmosomes.fna *bam | bcftools call -vmO z -o calls.vcf.gz &&
 
-# Filter variants
+# 3. Filter variants
 bcftools view -i '%QUAL>=20' calls.vcf.gz &&
 
-#index the calls
+# 4. Index the calls
 bcftools index calls.vcf.gz &&
 
-# normalize indels
+# 5. Normalize indels
 bcftools norm -f ../Reference_genome/GCA_016413895.1_Elo_Vpla-A_principal_1.0_genomic_chrmosomes.fna calls.vcf.gz -Ob -o calls.norm.bcf &&
 
-# filter adjacent indels within 5bp
+# 6. Filter adjacent indels within 5bp and save output
 bcftools filter --IndelGap 5 calls.norm.bcf -Ob -o calls.norm.flt-indels.bcf &&
 
 bcftools view calls.norm.flt-indels.bcf | vcfutils.pl varFilter - > vanilla_SNP-final.vcf
 
 ```
 
+### Dependencies
 
-## Calling SNPs and PCA
+bcftools.
 
-```{r}
-setwd("~/Vanilla_Research/Genomic_heterozygosity_project/SNP_analysis")
+## Filtering SNPs and PCA analysis
 
-#install and load packages
-if (!require("BiocManager", quietly = TRUE))
-  install.packages("BiocManager")
-BiocManager::install(version = "3.14")
 
-BiocManager::install(c("gdsfmt", "SNPRelate"))
+```{r eval = F, echo = T}
+# 1. Navigate to right folder
+cd ../Minimap2 &&
 
-library(gdsfmt)
+# 2. Launch R from terminal
+R
+
+# 3. Load packages
 library(SNPRelate)
+library(gdsfmt)
+
+library(R.utils) # Is this package used?
 
 
-library(R.utils)
-
-
-#unzip vcf file
+# 4. Unzip vcf file
 gunzip("calls.vcf.gz", remove = FALSE)
 
 #make an object out of vcf file
@@ -860,7 +886,7 @@ plot(tab$EV2, tab$EV1, xlab="eigenvector 2", ylab="eigenvector 1", pch = 19)
 dev.off()
 
 
-
+## MAP (preliminary code)
 
 snps<-read.table("snp132_ucsc_hg19.bed",sep="\t",header=F)
 colnames(snps)<-c("chr","start","end","id","score","strand")
@@ -884,6 +910,7 @@ png("snp132_density.png",500,750)
 print(snpDensity)
 dev.off()
 ```
+
 
 # References
 
