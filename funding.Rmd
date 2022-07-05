@@ -2,9 +2,10 @@
 title: " "
 ---
 
-# Funding
-
-This research was made possible by a LUSH grant and a start-up grant awarded to Sven Buerki by the Department of Biological Sciences, Boise State University (Boise, Idaho, USA).
-
 # Acknowledgements
+
+The authors thank Marco Antonio Dominguez Vazquez for sample collection throughout Mexico, as well as all farmers, botanists, and conservationists who helped to acquire material for this study. We would also like to thank LUSH Cosmetics Ltd. for funding and Boise State University (Boise, Idaho, USA) for support. 
+
+
+
 
