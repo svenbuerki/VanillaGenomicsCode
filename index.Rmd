@@ -25,14 +25,12 @@ $(document).ready(function() {
 
 # Website structure
 
-This companion website to Ellestad *et al.* (in prep.) provides a [reproducible report](reproducible_report.html) associated to this research.
-
-Overall, this study is aiming at developing GGGGG.
+This companion website to Ellestad *et al.* (in prep.) provides a [reproducible report](reproducible_report.html) associated to this research on the genomics of Mexican *Vanilla planifolia*.
 
 This website is structured with the following tabs:
 
 - [Reproducible report](reproducible_report.html) tab: Presentation of the data, software and code associated to the genomic analyses conducted on the *Vanilla planifolia* samples.
-- Genome-wide heterozygosity tab: Data, code and analyses associated to review on heterozygosity inferred uisng the approach implemented in GenomeScope.
+- [GenomeScope review](heterozygosity_review.html): Code and analyses associated to review on heterozygosity in plants inferred using the approach implemented in GenomeScope (v. 1 and 2).
 - [How to cite]() tab: Preferred citations to refer to material presented here.
 - [Acknolwedgements]() tab: List of people and funders supporting this research.
 
