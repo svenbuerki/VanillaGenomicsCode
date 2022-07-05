@@ -7,7 +7,7 @@ navbar:
       href: index.html
     - text: "Reproducible report"
       href: reproducible_report.html
-    - text: "Heterozygosity"
+    - text: "GenomeScope review"
       href: heterozygosity_review.html
     - text: "Acknowledgements"
       href: funding.html
