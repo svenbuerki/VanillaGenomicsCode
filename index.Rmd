@@ -36,7 +36,7 @@ This website is structured with the following tabs:
 
 # Meet the team
 
-- **Paige Ellestad, M.S. (paigeellestad@u.boisestate.edu)**: Ph.D student and Boise State University (BSU, Boise, ID, USA) enrolled in the EEB program. 
+- **Paige Ellestad, M.S. (paigeellestad@u.boisestate.edu)**: Ph.D student at Boise State University (BSU, Boise, ID, USA) enrolled in the EEB program. 
 - **Miguel Angel Perez Farrera, Ph.D**: Professor and Herbarium Curator at Herbario Eizi Matuda, Laboratorio de Ecología Evolutiva, Instituto de Ciencias Biológicas and Universidad de Ciencias y Artes (Tuxtla Gutiérrez, Chiapas, México).
 - **Sven Buerki, Ph.D (sven.buerki@boisestate.edu)**: Assistant Professor at Boise State University (BSU, Boise, ID, USA) and PI of this project funded by LUSH and BSU.
 

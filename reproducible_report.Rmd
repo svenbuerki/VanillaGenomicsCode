@@ -1026,8 +1026,6 @@ A total of 5,905,551 bi-allelic SNPs were called across the 15 Mexican *Vanilla*
 knitr::include_graphics("Images/LD_PCAs_02_08.png")
 ```
 
-
-
 # References
 
 <div id="refs"></div>
