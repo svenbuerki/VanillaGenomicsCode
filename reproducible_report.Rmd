@@ -47,6 +47,8 @@ library(pafr, quietly=TRUE)
 library(SNPRelate)
 library(gdsfmt)
 library(R.utils) # This package is used to uncompress vcf.gz file
+library(seqinr)
+library(RCircos)
 
 #Generate BibTex citation file for all R packages used to produce report
 knitr::write_bib(.packages(), file = 'packages.bib')
@@ -781,9 +783,9 @@ Here is the heatmap generated for the *Vanilla planifolia* samples from Mexico c
 knitr::include_graphics("Images/Heatmap_chrom_Vanilla_2.png")
 ```
 
-## SNP calling and clustering analyses {#SNPcallPCA}
+## SNP calling, density and clustering analyses {#SNPcallPCA}
 
-To further compare the genetic structure of the Mexican *Vanilla* samples, we have called and filtered SNPs across samples. These data were used to conduct a principal component analysis (PCA) allowing assessing genetic structuring within samples (compared to the reference genome).  
+To further compare the genetic structure of the Mexican *Vanilla* samples, we have called and filtered SNPs across samples at different LD values and inferred SNP density maps. These data were used to conduct a principal component analysis (PCA) allowing assessing genetic structuring within samples (compared to the reference genome).  
 
 ### Data requirements
 
@@ -808,11 +810,17 @@ BiocManager::install(c("gdsfmt", "SNPRelate"))
 
 # Install R.utils from GitHub
 remotes::install_github("HenrikBengtsson/R.utils", ref="develop")
+
+# Install RCircos for SNP density map
+install.packages("RCircos")
+
+# Install seqinr
+install.packages("seqinr")
 ```
 
 ### Code
 
-Merge all the `bam` files from the genome reconstruction analyses (stored in the `Bowtie` folder) and use `bcftools` to call and filter variants (SNPs). Further variant filtering is also done in R (see below) prior to inferring the PCA.
+Merge all the `bam` files from the genome reconstruction analyses (stored in the `Bowtie` folder) and use `bcftools` to call and filter variants (SNPs). Further variant filtering based on linkage disequilibrium is also done in R (see below) prior to inferring PCAs and SNP density maps (using a 500kb sliding window).
 
 ```{bash eval = F, echo = T}
 # 1. Navigate to right folder
@@ -865,16 +873,13 @@ SNPRelate::snpgdsSummary("SNPs/calls.gds")
 # Printed output:
 # The file name: /media/SeaGate/Vanilla_SRA/Bowtie/calls.gds 
 # The total number of samples: 15 
-# The total number of SNPs: 5905551 
+# The total number of SNPs: 7468839 
 # SNP genotypes are stored in SNP-major mode (Sample X SNP).
 
 # 8. Open file
 genofile <- SNPRelate::snpgdsOpen("SNPs/calls.gds")
 
-# 9. Create a data.frame with SNP information
-SNPsInfo <- data.frame(Chr = read.gdsn(index.gdsn(genofile, "snp.chromosome")), Position = read.gdsn(index.gdsn(genofile, "snp.position")), ID = read.gdsn(index.gdsn(genofile, "snp.id")))
-
-# 10. Prune SNP set to account for linkage disequilibrium and perform PCA
+# 9. Prune SNP set to account for linkage disequilibrium and perform PCA
 # Call SNPs with multiple ld.threshold values
 LDthresh <- c(0.2, 0.4, 0.6, 0.8)
 #Loop to filter SNPs based on LD thresholds and infer PCA
@@ -883,7 +888,7 @@ for(i in 1:length(LDthresh)){
   set.seed(1234)
   
   #Filter SNPs based on LDthresh
-  snpset <- SNPRelate::snpgdsLDpruning(genofile, ld.threshold=as.numeric(LDthresh[i]), autosome.only = FALSE) # Output = SNP.ID
+  snpset <- SNPRelate::snpgdsLDpruning(genofile, ld.threshold = as.numeric(LDthresh[i]), autosome.only = FALSE, num.thread = 4) # Output = SNP.ID
   
   #Store Number of SNPs
   NSNPs <- sum(lengths(snpset))
@@ -904,7 +909,7 @@ for(i in 1:length(LDthresh)){
   #Plot PCA and save in a pdf
   pdfFile <- paste0("Data/LD_", LDthresh[i], "_Vanilla.pdf")
   #Add text for 3 samples
-  target.samples <- c("Van31.bam", "Van67.bam", "Van26.bam")
+  target.samples <- c("Van31.bam", "Van67.bam")
   #Subset tab to get x and y for plotting
   targettab <- subset(tab, tab$sample.id %in% target.samples)
   #Rename samples
@@ -913,7 +918,7 @@ for(i in 1:length(LDthresh)){
   #Save pdf 
   pdf(pdfFile)
   #Plot PCA
-  plot(tab$EV1, tab$EV2, xlab=paste0("Eigen vector 1 (", pc.percent[1], "%)"), ylab=paste0("Eigen vector 2 (", pc.percent[1], "%)"), pch = 19, main = paste0("LD threshold of ", LDthresh[i], " resulting in ", NSNPs, " SNPs"))
+  plot(tab$EV1, tab$EV2, xlab=paste0("Eigen vector 1 (", pc.percent[1], "%)"), ylab=paste0("Eigen vector 2 (", pc.percent[2], "%)"), pch = 19, main = paste0("LD threshold of ", LDthresh[i], " resulting in ", NSNPs, " SNPs"))
   
   #Add target samples
   text(x = targettab$EV1, y = targettab$EV2+0.025, targettab$sample.id, cex = .8)
@@ -922,116 +927,143 @@ for(i in 1:length(LDthresh)){
 }
 ```
 
-```{r eval = F, echo = F}
+Finally, here is the code to infer the SNP density maps at different linkage disequilibrium thresholds (0.2 and 0.8).
+
+```{r eval = F, echo = T}
 ###
 # R code to infer SNP density along moving window and produce a map
-# 9. Create a data.frame with SNP information
+
+# 1. Load packages
+library(seqinr)
+library(RCircos)
+
+# 2. Create a data.frame with SNP information
 SNPsInfo <- data.frame(Chr = read.gdsn(index.gdsn(genofile, "snp.chromosome")), Position = read.gdsn(index.gdsn(genofile, "snp.position")), ID = read.gdsn(index.gdsn(genofile, "snp.id")))
 
-# 10. Infer SNP density map
-# - This needs info on length of chromosomes
+# 3. Infer SNP density map
+# - This needs info on length of chromosomes and called SNPs
 
 #Load fasta of chromosomes
 chrFasta <- seqinr::read.fasta("SNPs/GCA_016413895.1_Elo_Vpla-A_principal_1.0_genomic_chrmosomes.fna", forceDNAtolower = F)
 
-#Extract chr lengths
-chrLength <- as.matrix(summary(chrFasta)[,1])
-colnames(chrLength) <- "ChrLength"
+# 4. Call SNPs with LD values, infer density along chr and produce map
+#Set LD values
+LD <- c(0.2, 0.8)
 
-SNPslidingdat <- NULL
-for(j in 1:nrow(chrLength)){
-  chr <- rownames(chrLength)[j]
-  slidwind <- 500000
-  
-  #Establish foundation for inferring nbr of SNP per sliding window length
-  # Start by creating a vector to set the position on the sliding window
-  starts <- seq(1, as.numeric(chrLength[match(chr, rownames(chrLength)),1])-as.numeric(slidwind), by = as.numeric(slidwind))
-  
-  #Create table with SNP position and ID for target chr
-  chrDat <- subset(SNPsInfo, SNPsInfo$Chr == chr & SNPsInfo$ID %in% snpset[match(paste0("chr", chr), names(snpset))][[1]])
-  
-  # Set number of iterations in loop based on starts
-  n <- length(starts)
+#Do a loop where SNPs are called at specific LD value and density map is inferred
+for(j in 1:length(LD)){
+  print("Calling SNPs")
+  #Set seed to ensure reproducibility
+  set.seed(1234)
+ 
+  #Filter SNPs based on LD
+  snpset <- SNPRelate::snpgdsLDpruning(genofile, ld.threshold = LD[j], autosome.only = FALSE, num.thread = 4) # Output = SNP.ID
     
-  # Create an empty matrix to store GC values
-  chunkData <- matrix(ncol=5, nrow=n)
-  colnames(chunkData) <- c("Chromosome", "chromStart", "chromEnd", "SNP_nbr", "SNP_perc")
-  chunkData <- as.data.frame(chunkData)
-  chunkData$Chromosome <- rep(chr, nrow(chunkData))
-  chunkData$chromStart <- starts
-  chunkData$chromEnd <- as.numeric(chunkData$chromStart)+(as.numeric(slidwind)-1)
+  #Number of SNPs per chromosome
+  write.csv(lengths(snpset), file = paste0("Data/SNP_chr_", LD[j], ".csv"))
+  
+  #Extract chr lengths
+  chrLength <- as.matrix(summary(chrFasta)[,1])
+  colnames(chrLength) <- "ChrLength"
+  
+  print("Infer SNP density along sliding window")
+  SNPslidingdat <- NULL
+  for(j in 1:nrow(chrLength)){
+    chr <- rownames(chrLength)[j]
+    slidwind <- 500000
     
-  ###
-  # Sliding window: SNP nbr and percentages
-  ###
-  print(paste0("Processing chromsome: ", chr))
-  pb <- txtProgressBar(min = 0, max = n, style = 3)
-  for(i in 1:n){
-    #Where are we in the loop
-    #print(paste("Iteration:", i, "from", n, sep=' '))
-    #Infer nbr of SNP in sliding window
-    chunkData$SNP_nbr[i] <- length(which(chrDat$Position %in% seq(from = chunkData$chromStart[i], to = chunkData$chromEnd[i], by = 1)))
-    #Infer SNP percentage
-    chunkData$SNP_perc[i] <- round(as.numeric(chunkData$SNP_nbr[i])/as.numeric(slidwind), 2)
+    #Establish foundation for inferring nbr of SNP per sliding window length
+    # Start by creating a vector to set the position on the sliding window
+    starts <- seq(1, as.numeric(chrLength[match(chr, rownames(chrLength)),1])-as.numeric(slidwind), by = as.numeric(slidwind))
     
-    # update progress bar
-    setTxtProgressBar(pb, i)
+    #Create table with SNP position and ID for target chr
+    chrDat <- subset(SNPsInfo, SNPsInfo$Chr == chr & SNPsInfo$ID %in% snpset[match(paste0("chr", chr), names(snpset))][[1]])
+    
+    # Set number of iterations in loop based on starts
+    n <- length(starts)
+      
+    # Create an empty matrix to store GC values
+    chunkData <- matrix(ncol=5, nrow=n)
+    colnames(chunkData) <- c("Chromosome", "chromStart", "chromEnd", "SNP_nbr", "SNP_perc")
+    chunkData <- as.data.frame(chunkData)
+    chunkData$Chromosome <- rep(chr, nrow(chunkData))
+    chunkData$chromStart <- starts
+    chunkData$chromEnd <- as.numeric(chunkData$chromStart)+(as.numeric(slidwind)-1)
+      
+    ###
+    # Sliding window: SNP nbr and percentages
+    ###
+    print(paste0("Processing chromsome: ", chr))
+    pb <- txtProgressBar(min = 0, max = n, style = 3)
+    for(i in 1:n){
+      #Where are we in the loop
+      #print(paste("Iteration:", i, "from", n, sep=' '))
+      #Infer nbr of SNP in sliding window
+      chunkData$SNP_nbr[i] <- length(which(chrDat$Position %in% seq(from = chunkData$chromStart[i], to = chunkData$chromEnd[i], by = 1)))
+      #Infer SNP percentage
+      chunkData$SNP_perc[i] <- round(as.numeric(chunkData$SNP_nbr[i])/as.numeric(slidwind), 2)
+      
+      # update progress bar
+      setTxtProgressBar(pb, i)
+    }
+    close(pb)
+    
+    SNPslidingdat <- rbind(chunkData, SNPslidingdat)
   }
-  close(pb)
   
-  SNPslidingdat <- rbind(chunkData, SNPslidingdat)
+  #Load data for map
+  #Chromosome data
+  Van <- data.frame(Chromosome = rownames(chrLength), ChromStart = rep(0, nrow(chrLength)), ChromEnd = as.vector(chrLength), Band = rep("x", nrow(chrLength)), Stain = rep("gneg", nrow(chrLength)))
+  Van$Chromosome <- as.character(Van$Chromosome)
+  Van$ChromEnd <- as.numeric(Van$ChromEnd)
+  
+  #Plot data
+  out.file <- paste0("Data/SNP_density_map_LD_", LD[j], ".pdf");
+  pdf(file=out.file, height=9, width=9, compress=TRUE)
+  chr.exclude <- NULL
+  cyto.info <- Van
+  tracks.inside <- 4
+  tracks.outside <- 0
+  RCircos.Set.Core.Components(cyto.info, chr.exclude, tracks.inside, tracks.outside)
+  
+  rcircos.params <- RCircos.Get.Plot.Parameters()
+  rcircos.params$track.background <- NULL
+  rcircos.params$hist.color <- "brown"
+  rcircos.cyto <- RCircos.Get.Plot.Ideogram()
+  rcircos.cyto$BandColor <- rcircos.cyto$ChrColor
+  rcircos.cyto$ChrColor <- rep("black", nrow(chrLength))
+  RCircos.Reset.Plot.Ideogram(rcircos.cyto)
+  rcircos.position <- RCircos.Get.Plot.Positions()
+  RCircos.Reset.Plot.Parameters(rcircos.params)
+  RCircos.List.Plot.Parameters()
+  RCircos.Set.Plot.Area()
+  par(mai=c(0.25, 0.25, 0.25, 0.25))
+  plot.new()
+  plot.window(c(-2.5,2.5), c(-2.5, 2.5))
+  RCircos.Draw.Chromosome.Ideogram()
+  RCircos.Chromosome.Ideogram.Plot(tick.interval = 5)
+  
+  # Number of SNPs
+  RCircos.Heatmap.Plot(SNPslidingdat, data.col = 4, track.num = 2, side = "in", min.value = 0, max.value = max(SNPslidingdat$SNP_nbr))
+  text(x=0, y=1, "#SNPs", cex=.8)
 }
-
-
-library(RCircos)
-
-#Load data
-#Chromosome data
-Van <- data.frame(Chromosome = rownames(chrLength), ChromStart = rep(0, nrow(chrLength)), ChromEnd = as.vector(chrLength), Band = rep("x", nrow(chrLength)), Stain = rep("gneg", nrow(chrLength)))
-Van$Chromosome <- as.character(Van$Chromosome)
-Van$ChromEnd <- as.numeric(Van$ChromEnd)
-#Van$Chromosome <- gsub("[.]1", "", gsub("CM0", "", Van$Chromosome))
-#SNPslidingdat$Chromosome <- gsub("[.]1", "", gsub("CM0", "", SNPslidingdat$Chromosome))
-SNPslidingdat <- SNPslidingdat[-which(SNPslidingdat$SNP_nbr == 0),]
-#Plot data
-out.file <- "RCircosSagebrushGenome.pdf";
-pdf(file=out.file, height=9, width=9, compress=TRUE)
-chr.exclude <- NULL
-cyto.info <- Van
-tracks.inside <- 4
-tracks.outside <- 0
-RCircos.Set.Core.Components(cyto.info, chr.exclude, tracks.inside, tracks.outside)
-
-rcircos.params <- RCircos.Get.Plot.Parameters()
-rcircos.params$track.background <- NULL
-rcircos.params$hist.color <- "brown"
-rcircos.cyto <- RCircos.Get.Plot.Ideogram()
-rcircos.cyto$BandColor <- rcircos.cyto$ChrColor
-rcircos.cyto$ChrColor <- rep("black", nrow(chrLength))
-RCircos.Reset.Plot.Ideogram(rcircos.cyto)
-rcircos.position <- RCircos.Get.Plot.Positions()
-RCircos.Reset.Plot.Parameters(rcircos.params)
-RCircos.List.Plot.Parameters()
-RCircos.Set.Plot.Area()
-par(mai=c(0.25, 0.25, 0.25, 0.25))
-plot.new()
-plot.window(c(-2.5,2.5), c(-2.5, 2.5))
-RCircos.Draw.Chromosome.Ideogram()
-RCircos.Chromosome.Ideogram.Plot(tick.interval = 5)
-
-# Number of SNPs
-RCircos.Heatmap.Plot(SNPslidingdat, data.col = 4, track.num = 2, side = "in", min.value = 0, max.value = max(SNPslidingdat$SNP_nbr))
-text(x=0, y=1, "#SNPs", cex=.8)
 ```
 
 
 ### Output
 
-A total of 5,905,551 bi-allelic SNPs were called across the 15 Mexican *Vanilla* samples. When a LD threshold of 0.2 was set 7,290 SNPs remained, whereas when it was set to 0.8, 360,942 SNPs remained post filtering. However, the general clustering between these two extreme values led to highly similar clustering (see Figure \@ref(fig:PCASNPs)).
+A total of 5,905,551 bi-allelic SNPs were called across the 15 Mexican *Vanilla* samples. When a LD threshold of 0.2 was set 9,297 SNPs remained, whereas when it was set to 0.8, 419,885 SNPs remained post filtering. However, the general clustering between these two extreme values led to highly similar clustering (see Figure \@ref(fig:PCASNPs)).
 
 ```{r PCASNPs, echo=FALSE, fig.cap="PCAs showing relationships between Mexican Vanilla samples inferred using filtered SNPs at two LD thresholds.", out.width = '100%'}
 knitr::include_graphics("Images/LD_PCAs_02_08.png")
 ```
+
+The SNP density map based on 0.2 LD threshold is in Figure
+
+```{r SNPdensitymap, echo=FALSE, fig.cap="Mexican Vanilla SNP density map inferred with a 0.2 LD threshold and based on a 500kb sliding window.", out.width = '100%'}
+knitr::include_graphics("Images/SNP_density_map_LD_0.2.png")
+```
+
 
 # References
 
