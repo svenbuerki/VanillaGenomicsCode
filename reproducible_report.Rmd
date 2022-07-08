@@ -41,6 +41,13 @@ library(kableExtra)
 library(tufte)
 require(leaflet)
 
+library(magick)
+library(pafr, quietly=TRUE)
+#library("gplots")
+library(SNPRelate)
+library(gdsfmt)
+library(R.utils) # This package is used to uncompress vcf.gz file
+
 #Generate BibTex citation file for all R packages used to produce report
 knitr::write_bib(.packages(), file = 'packages.bib')
 ```
@@ -88,7 +95,7 @@ m
 
 ## Genomic data
 
-This project relies on paired-end Illumina short-read data (2x150bp) in `fastq.gz` format generated on an Illumina HiSeq 2500 instrument by Azenta (New Jersey, USA). The data produced in this project are deposited on NCBI under BioProject (PRJNA841950) and SRA accessions SRR19374404-SRR19374419 (see Table \@ref(tab:tabsampling)). We are also using data from the BioProject [PRJNA633886](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA633886/) published in @Hasing2020. The 1C genome size for the reference genome [GCA_016413915.1](https://www.ncbi.nlm.nih.gov/assembly/GCA_016413895.1) is 736,752,966 bp. This value was used to infer raw genome coverage presented in Table \@ref(tab:tabsampling). We aimed at sequencing the genome at 20x.
+This project relies on paired-end Illumina short-read data (2x150bp) in `fastq.gz` format generated on an Illumina HiSeq 2500 instrument by Azenta (New Jersey, USA). The data produced in this project are deposited on NCBI under BioProject (PRJNA841950) and SRA accessions SRR19374404-SRR19374419 (see Table \@ref(tab:tabsampling)). We are also using data from the BioProject [PRJNA633886](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA633886/) published in @Hasing2020. The haploid genome size for the reference genome [GCA_016413915.1](https://www.ncbi.nlm.nih.gov/assembly/GCA_016413895.1) is 736,752,966 bp. This value was used to infer raw genome coverage presented in Table \@ref(tab:tabsampling). We aimed at sequencing the genome at 50x due to the observed high genome-wide heterozygosity level [@Hasing2020].
 
 ```{r tabsampling, eval = T, echo=F, warning = FALSE, message=FALSE}
 ###~~~
