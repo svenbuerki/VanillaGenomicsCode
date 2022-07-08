@@ -38,7 +38,9 @@ library(devtools)
 library(kfigr)
 library(dplyr)
 library(kableExtra)
-library(tufte)
+library(ggplot2)
+library(rentrez)
+library(easyPubMed)
 
 #Generate BibTex citation file for all R packages used to produce report
 knitr::write_bib(.packages(), file = 'packages.bib')
