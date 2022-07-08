@@ -1058,7 +1058,7 @@ A total of 5,905,551 bi-allelic SNPs were called across the 15 Mexican *Vanilla*
 knitr::include_graphics("Images/LD_PCAs_02_08.png")
 ```
 
-The SNP density map based on 0.2 LD threshold is in Figure
+The SNP density map based on a 0.2 LD threshold and a sliding window of 500kb is displayed in Figure \@ref(fig:SNPdensitymap).
 
 ```{r SNPdensitymap, echo=FALSE, fig.cap="Mexican Vanilla SNP density map inferred with a 0.2 LD threshold and based on a 500kb sliding window.", out.width = '100%'}
 knitr::include_graphics("Images/SNP_density_map_LD_0.2.png")
