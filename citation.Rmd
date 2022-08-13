@@ -1,5 +1,5 @@
 ---
-title: "Citations"
+title: "Citation"
 ---
 
-Ellestad, P;  Buerki, S. TBD. *Plants* (in prep.)
+Ellestad, P.; Pérez-Farrera, M.A.; Buerki, S. Genomic Insights into Cultivated Mexican *Vanilla planifolia* Reveal High Levels of Heterozygosity Stemming from Hybridization. *Plants* **2022**, 11, 2090. https://doi.org/10.3390/plants11162090

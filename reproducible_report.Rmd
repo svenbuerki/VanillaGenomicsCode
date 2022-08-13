@@ -60,7 +60,7 @@ knitr::write_bib(.packages(), file = 'packages.bib')
 
 # Introduction
 
-This reproducible report provides evidence on the data, software, packages and code used to perform the genomic analyses described in Ellestad *et al.* (in prep.). All the analyses were performed on a DELL Precision 7920 with the Ubuntu 18.04.6 LTS (GNU/Linux 4.15.0-177-generic x86_64) OS at Boise State University (ID, USA) between January and June 2022.
+This reproducible report provides evidence on the data, software, packages and code used to perform the genomic analyses described in @Ellestad2022b. All the analyses were performed on a DELL Precision 7920 with the Ubuntu 18.04.6 LTS (GNU/Linux 4.15.0-177-generic x86_64) OS at Boise State University (ID, USA) between January and June 2022.
 
 # Sampling
 
@@ -91,7 +91,8 @@ contenido <- paste(sep = "<br/>",
 # Produce map
 m <- leaflet(width = "100%") %>%
       addTiles() %>%
-      addMarkers(lat = round(as.numeric(loc$latitude),3), label = loc$ID, lng = round(as.numeric(loc$longitude),3), popup = contenido)
+      addMarkers(lat = round(as.numeric(loc$latitude),3), label = loc$ID, lng = round(as.numeric(loc$longitude),3))
+#addMarkers(lat = round(as.numeric(loc$latitude),3), label = loc$ID, lng = round(as.numeric(loc$longitude),3), popup = contenido)
 m
 ```
 

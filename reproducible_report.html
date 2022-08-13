@@ -11,7 +11,7 @@
 
 <meta name="author" content="Paige Ellestad and Sven Buerki - Boise State University" />
 
-<meta name="date" content="2022-07-08" />
+<meta name="date" content="2022-08-13" />
 
 <title>Reproducible report</title>
 
@@ -384,7 +384,7 @@ div.tocify {
 <h1 class="title toc-ignore">Reproducible report</h1>
 <h3 class="subtitle">Vanilla genomics</h3>
 <h4 class="author">Paige Ellestad and Sven Buerki - Boise State University</h4>
-<h4 class="date">2022-07-08</h4>
+<h4 class="date">2022-08-13</h4>
 
 </div>
 
@@ -401,7 +401,7 @@ $(document).ready(function() {
 <!-- The website is here: https://svenbuerki.github.io/VanillaGenomicsCode/ -->
 <div id="introduction" class="section level1" number="1">
 <h1><span class="header-section-number">1</span> Introduction</h1>
-<p>This reproducible report provides evidence on the data, software, packages and code used to perform the genomic analyses described in Ellestad <em>et al.</em> (in prep.). All the analyses were performed on a DELL Precision 7920 with the Ubuntu 18.04.6 LTS (GNU/Linux 4.15.0-177-generic x86_64) OS at Boise State University (ID, USA) between January and June 2022.</p>
+<p>This reproducible report provides evidence on the data, software, packages and code used to perform the genomic analyses described in <span class="citation">Ellestad et al. (<a href="#ref-Ellestad2022b" role="doc-biblioref">2022</a>)</span>. All the analyses were performed on a DELL Precision 7920 with the Ubuntu 18.04.6 LTS (GNU/Linux 4.15.0-177-generic x86_64) OS at Boise State University (ID, USA) between January and June 2022.</p>
 </div>
 <div id="sampling" class="section level1" number="2">
 <h1><span class="header-section-number">2</span> Sampling</h1>
@@ -409,8 +409,8 @@ $(document).ready(function() {
 <div id="distribution-data" class="section level2" number="2.1">
 <h2><span class="header-section-number">2.1</span> Distribution data</h2>
 <p>Map showing locations of the plantations where samples <em>Vanilla planifolia</em> were collected for this study is presented below together with images of plants in the field.</p>
-<div id="htmlwidget-5054eac1a726557a500e" style="width:100%;height:480px;" class="leaflet html-widget"></div>
-<script type="application/json" data-for="htmlwidget-5054eac1a726557a500e">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addTiles","args":["https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",null,null,{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"attribution":"&copy; <a href=\"https://openstreetmap.org\">OpenStreetMap<\/a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA<\/a>"}]},{"method":"addMarkers","args":[[20.761,20.497,20.497,20.362,20.256,20.393,20.436,20.452,20.501,20.235,19.602,18.938,17.893,17.901,17.853],[-97.422,-97.412,-97.412,-97.243,-97.212,-97.21,-97.313,-97.103,-97.215,-96.904,-96.911,-96.85,-96.327,-96.334,-96.333],null,null,null,{"interactive":true,"draggable":false,"keyboard":true,"title":"","alt":"","zIndexOffset":0,"opacity":1,"riseOnHover":false,"riseOffset":250},["<img src='Images/reseq_thumbnail_png/MEX12.png' /><br/><b>Sample ID: <\/b>MEX12<br/><b>Municipality: <\/b>Tuxpan","<img src='Images/reseq_thumbnail_png/MEX13.png' /><br/><b>Sample ID: <\/b>MEX13<br/><b>Municipality: <\/b>Poza Rica de Hidalgo","<img src='Images/reseq_thumbnail_png/MEX14.png' /><br/><b>Sample ID: <\/b>MEX14<br/><b>Municipality: <\/b>Poza Rica de Hidalgo","<img src='Images/reseq_thumbnail_png/MEX19.png' /><br/><b>Sample ID: <\/b>MEX19<br/><b>Municipality: <\/b>Papantla","<img src='' /><br/><b>Sample ID: <\/b>MEX20<br/><b>Municipality: <\/b>Papantla","<img src='Images/reseq_thumbnail_png/MEX26.png' /><br/><b>Sample ID: <\/b>MEX26<br/><b>Municipality: <\/b>Papantla","<img src='Images/reseq_thumbnail_png/MEX31.png' /><br/><b>Sample ID: <\/b>MEX31<br/><b>Municipality: <\/b>Papantla","<img src='Images/reseq_thumbnail_png/MEX36.png' /><br/><b>Sample ID: <\/b>MEX36<br/><b>Municipality: <\/b>Gutierrez Zamora","<img src='Images/reseq_thumbnail_png/MEX41.png' /><br/><b>Sample ID: <\/b>MEX41<br/><b>Municipality: <\/b>Papantla","<img src='Images/reseq_thumbnail_png/MEX51.png' /><br/><b>Sample ID: <\/b>MEX51<br/><b>Municipality: <\/b>San Rafael","<img src='Images/reseq_thumbnail_png/MEX59.png' /><br/><b>Sample ID: <\/b>MEX59<br/><b>Municipality: <\/b>Jilotepec","<img src='Images/reseq_thumbnail_png/MEX65.png' /><br/><b>Sample ID: <\/b>MEX65<br/><b>Municipality: <\/b>Amatlan de los Reyes","<img src='Images/reseq_thumbnail_png/MEX67.png' /><br/><b>Sample ID: <\/b>MEX67<br/><b>Municipality: <\/b>San Juan Bautista Valle Nacional","<img src='Images/reseq_thumbnail_png/MEX69.png' /><br/><b>Sample ID: <\/b>MEX69<br/><b>Municipality: <\/b>San Juan Bautista Valle Nacional","<img src='Images/reseq_thumbnail_png/MEX79.png' /><br/><b>Sample ID: <\/b>MEX79<br/><b>Municipality: <\/b>San Juan Bautista Valle Nacional"],null,null,null,["MEX12","MEX13","MEX14","MEX19","MEX20","MEX26","MEX31","MEX36","MEX41","MEX51","MEX59","MEX65","MEX67","MEX69","MEX79"],{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null]}],"limits":{"lat":[17.853,20.761],"lng":[-97.422,-96.327]}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-8a130a85934383c12ba6" style="width:100%;height:480px;" class="leaflet html-widget"></div>
+<script type="application/json" data-for="htmlwidget-8a130a85934383c12ba6">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addTiles","args":["https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",null,null,{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"attribution":"&copy; <a href=\"https://openstreetmap.org\">OpenStreetMap<\/a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA<\/a>"}]},{"method":"addMarkers","args":[[20.761,20.497,20.497,20.362,20.256,20.393,20.436,20.452,20.501,20.235,19.602,18.938,17.893,17.901,17.853],[-97.422,-97.412,-97.412,-97.243,-97.212,-97.21,-97.313,-97.103,-97.215,-96.904,-96.911,-96.85,-96.327,-96.334,-96.333],null,null,null,{"interactive":true,"draggable":false,"keyboard":true,"title":"","alt":"","zIndexOffset":0,"opacity":1,"riseOnHover":false,"riseOffset":250},null,null,null,null,["MEX12","MEX13","MEX14","MEX19","MEX20","MEX26","MEX31","MEX36","MEX41","MEX51","MEX59","MEX65","MEX67","MEX69","MEX79"],{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null]}],"limits":{"lat":[17.853,20.761],"lng":[-97.422,-96.327]}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div id="genomic-data" class="section level2" number="2.2">
 <h2><span class="header-section-number">2.2</span> Genomic data</h2>
@@ -2884,6 +2884,9 @@ Figure 10.5: Mexican Vanilla SNP density map inferred with a 0.2 LD threshold an
 <div id="ref-Danecek2021" class="csl-entry">
 <span class="smallcaps">Danecek, P.</span>, <span class="smallcaps">J.K. Bonfield</span>, <span class="smallcaps">J. Liddle</span>, <span class="smallcaps">J. Marshall</span>, <span class="smallcaps">V. Ohan</span>, <span class="smallcaps">M.O. Pollard</span>, <span class="smallcaps">A. Whitwham</span>, et al. 2021. <span class="nocase">Twelve years of SAMtools and BCFtools</span>. <em>GigaScience</em> 10: Available at: <a href="https://doi.org/10.1093/gigascience/giab008">https://doi.org/10.1093/gigascience/giab008</a>.
 </div>
+<div id="ref-Ellestad2022b" class="csl-entry">
+<span class="smallcaps">Ellestad, P.</span>, <span class="smallcaps">M.A. Pérez-Farrera</span>, and <span class="smallcaps">S. Buerki</span>. 2022. Genomic insights into cultivated mexican vanilla planifolia reveal high levels of heterozygosity stemming from hybridization. <em>Plants</em> 11: Available at: <a href="https://www.mdpi.com/2223-7747/11/16/2090">https://www.mdpi.com/2223-7747/11/16/2090</a>.
+</div>
 <div id="ref-Hasing2020" class="csl-entry">
 <span class="smallcaps">Hasing, T.</span>, <span class="smallcaps">H. Tang</span>, <span class="smallcaps">M. Brym</span>, <span class="smallcaps">F. Khazi</span>, <span class="smallcaps">T. Huang</span>, and <span class="smallcaps">A.H. Chambers</span>. 2020. A phased vanilla planifolia genome enables genetic improvement of flavour and production. <em>Nature Food</em> 1: 811–819. Available at: <a href="https://doi.org/10.1038/s43016-020-00197-2">https://doi.org/10.1038/s43016-020-00197-2</a>.
 </div>
@@ -2970,7 +2973,7 @@ Data Visualisations Using the Grammar of Graphics</em>. R package version
 Data Manipulation</em>. R package version 1.0.9. 2022.
 <a href="https://CRAN.R-project.org/package=dplyr" class="uri">https://CRAN.R-project.org/package=dplyr</a>.</p>
 <p>[18] H. Wickham, J. Hester, W. Chang, et al. <em>devtools: Tools to Make
-Developing R Packages Easier</em>. R package version 2.4.3. 2021.
+Developing R Packages Easier</em>. R package version 2.4.4. 2022.
 <a href="https://CRAN.R-project.org/package=devtools" class="uri">https://CRAN.R-project.org/package=devtools</a>.</p>
 <p>[19] D. Winter. <em>pafr: Read, Manipulate and Visualize Pairwise mApping
 Format Data</em>. R package version 0.0.2. 2020.
