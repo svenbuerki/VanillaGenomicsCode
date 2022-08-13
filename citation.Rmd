@@ -1,5 +1,15 @@
 ---
-title: "Citation"
+title: "Citations"
 ---
 
+The article directly associated to the data and code presented here is: 
+
 Ellestad, P.; Pérez-Farrera, M.A.; Buerki, S. Genomic Insights into Cultivated Mexican *Vanilla planifolia* Reveal High Levels of Heterozygosity Stemming from Hybridization. *Plants* **2022**, 11, 2090. https://doi.org/10.3390/plants11162090
+
+Two companion publications have been key in providing the evidence and hypothesis presented in this research. These publications are:
+
+Ellestad, P.; Perez Farrera, M. A.; Forest, F.; Buerki, S. Uncovering Haplotype Diversity in Cultivated Mexican *vanilla* species. *American Journal of Botany* **2022**, 109 (7), 1120– 1138. https://doi.org/10.1002/ajb2.16024
+
+Ellestad, P.; Forest, F.; Serpe, M.; Novak, S.J.; Buerki, S. Harnessing Large-Scale Biodiversity Data to Infer the Current Distribution of *Vanilla planifolia* (Orchidaceae). *Botanical Journal of the Linnean Society* **2021**, 196 (3), 407–422. https://doi.org/10.1093/botlinnean/boab005
+
+
